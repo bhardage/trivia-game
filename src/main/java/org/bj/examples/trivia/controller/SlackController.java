@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(value = "/slack")
 public class SlackController {
     private final SlackSlashCommandService slackSlashCommandService;
 
@@ -17,7 +18,7 @@ public class SlackController {
         this.slackSlashCommandService = slackSlashCommandService;
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/slash", method = RequestMethod.POST)
     public SlackSlashCommandResponseDoc slackSlashCommand(final SlackSlashCommandRequestDoc requestDoc) {
         return slackSlashCommandService.processSlashCommand(requestDoc);
     }
