@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_EMPTY)
-public class SlackSlashCommandResponseDoc {
+public class SlackResponseDoc {
     @JsonProperty(value = "response_type")
     private SlackResponseType responseType;
 
     private String text;
     private List<SlackAttachment> attachments;
 
-    public static SlackSlashCommandResponseDoc EMPTY = new SlackSlashCommandResponseDoc();
+    public static SlackResponseDoc EMPTY = new SlackResponseDoc();
 
     public SlackResponseType getResponseType() {
         return responseType;

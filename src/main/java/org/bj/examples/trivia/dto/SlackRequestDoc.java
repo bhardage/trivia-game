@@ -1,6 +1,6 @@
 package org.bj.examples.trivia.dto;
 
-public class SlackSlashCommandRequestDoc {
+public class SlackRequestDoc {
     private String token;
 
     private String teamId;

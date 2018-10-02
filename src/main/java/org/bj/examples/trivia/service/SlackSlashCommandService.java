@@ -1,8 +1,8 @@
 package org.bj.examples.trivia.service;
 
-import org.bj.examples.trivia.dto.SlackSlashCommandRequestDoc;
-import org.bj.examples.trivia.dto.SlackSlashCommandResponseDoc;
+import org.bj.examples.trivia.dto.SlackRequestDoc;
+import org.bj.examples.trivia.dto.SlackResponseDoc;
 
 public interface SlackSlashCommandService {
-    SlackSlashCommandResponseDoc processSlashCommand(final SlackSlashCommandRequestDoc requestDoc);
+    SlackResponseDoc processSlashCommand(final SlackRequestDoc requestDoc);
 }
