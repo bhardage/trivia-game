@@ -29,7 +29,11 @@ public class DelayedSlackServiceImpl implements DelayedSlackService {
     public void sendResponse(final String url, final SlackResponseDoc responseDoc) {
         try {
             final DelayedSlackMessage message = new DelayedSlackMessage(url, responseDoc);
-            messagingGateway.sendToPubsub(objectMapper.writeValueAsString(message));
+            final String messageText = objectMapper.writeValueAsString(message);
+
+            log.info("Sending message to URL \"" + url + "\": " + messageText);
+
+            messagingGateway.sendToPubsub(messageText);
         } catch (JsonProcessingException e) {
             log.error("An unhandled exception occurred: ", e);
         }
