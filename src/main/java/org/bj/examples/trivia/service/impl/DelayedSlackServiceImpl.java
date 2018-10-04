@@ -31,7 +31,7 @@ public class DelayedSlackServiceImpl implements DelayedSlackService {
             final DelayedSlackMessage message = new DelayedSlackMessage(url, responseDoc);
             final String messageText = objectMapper.writeValueAsString(message);
 
-            log.info("Sending message to URL \"" + url + "\": " + messageText);
+            log.info("Sending message to URL \"" + url + "\". Complete message: " + messageText);
 
             messagingGateway.sendToPubsub(messageText);
         } catch (JsonProcessingException e) {

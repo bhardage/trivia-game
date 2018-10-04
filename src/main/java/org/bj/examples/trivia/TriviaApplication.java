@@ -58,6 +58,7 @@ public class TriviaApplication {
     @ServiceActivator(inputChannel = "pubsubInputChannel")
     public MessageHandler messageReceiver(final DelayedSlackMessageListener delayedSlackMessageListener) {
         return message -> {
+            System.out.println("Received the message: " + message);
             delayedSlackMessageListener.messageReceiver(message.getPayload().toString());
         };
     }
