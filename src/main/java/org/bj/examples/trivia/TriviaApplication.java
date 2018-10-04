@@ -1,5 +1,6 @@
 package org.bj.examples.trivia;
 
+import org.bj.examples.trivia.message.DelayedSlackMessageListener;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,7 @@ import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
@@ -24,6 +26,11 @@ public class TriviaApplication {
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();
     }
+
+	@MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
+	public interface PubsubOutboundGateway {
+	    void sendToPubsub(String text);
+	}
 
 	@Bean
     @ServiceActivator(inputChannel = "pubsubOutputChannel")
@@ -45,5 +52,13 @@ public class TriviaApplication {
         adapter.setOutputChannel(inputChannel);
 
         return adapter;
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "pubsubInputChannel")
+    public MessageHandler messageReceiver(final DelayedSlackMessageListener delayedSlackMessageListener) {
+        return message -> {
+            delayedSlackMessageListener.messageReceiver(message.getPayload().toString());
+        };
     }
 }

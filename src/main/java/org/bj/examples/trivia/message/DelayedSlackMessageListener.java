@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +24,6 @@ public class DelayedSlackMessageListener {
         this.objectMapper = objectMapper;
     }
 
-    @ServiceActivator(inputChannel = "pubsubInputChannel")
     public void messageReceiver(String payload) {
         log.info("Message arrived! Payload: " + payload);
 
