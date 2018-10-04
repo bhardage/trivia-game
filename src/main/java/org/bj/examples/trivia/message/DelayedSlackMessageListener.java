@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +17,7 @@ public class DelayedSlackMessageListener {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public DelayedSlackMessageListener(
             final RestTemplate restTemplate,
             final ObjectMapper objectMapper

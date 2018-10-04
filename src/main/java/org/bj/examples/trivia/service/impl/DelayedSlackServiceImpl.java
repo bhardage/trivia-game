@@ -6,6 +6,7 @@ import org.bj.examples.trivia.TriviaApplication.PubsubOutboundGateway;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.message.DelayedSlackMessage;
 import org.bj.examples.trivia.service.DelayedSlackService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +19,7 @@ public class DelayedSlackServiceImpl implements DelayedSlackService {
     private final PubsubOutboundGateway messagingGateway;
     private final ObjectMapper objectMapper;
 
+    @Autowired
     public DelayedSlackServiceImpl(
             final PubsubOutboundGateway messagingGateway,
             final ObjectMapper objectMapper
