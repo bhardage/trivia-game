@@ -9,7 +9,7 @@ import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.ScoreService;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class InMemoryScoreServiceImpl implements ScoreService {
     private Map<SlackUser, Long> scoresByUser = new ConcurrentHashMap<>();
 
