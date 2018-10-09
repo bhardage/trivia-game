@@ -33,10 +33,13 @@ public class TriviaGameServiceImplTest {
                 new SlackUser("1235", "longertest2"), 103L,
                 new SlackUser("1236", "unmanageablylongertest3"), 12L
         );
+        final String channelId = "channel";
+        final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setChannelId(channelId);
 
-        given(scoreService.getAllScoresByUser()).willReturn(scoresByUser);
+        given(scoreService.getAllScoresByUser(channelId)).willReturn(scoresByUser);
 
-        final SlackResponseDoc responseDoc = cut.getScores(new SlackRequestDoc());
+        final SlackResponseDoc responseDoc = cut.getScores(requestDoc);
 
         /*
          * ```Scores:
@@ -50,9 +53,13 @@ public class TriviaGameServiceImplTest {
 
     @Test
     public void testGetScoresWithNoUsers() {
-        given(scoreService.getAllScoresByUser()).willReturn(ImmutableMap.of());
+        final String channelId = "channel";
+        final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setChannelId(channelId);
 
-        final SlackResponseDoc responseDoc = cut.getScores(new SlackRequestDoc());
+        given(scoreService.getAllScoresByUser(channelId)).willReturn(ImmutableMap.of());
+
+        final SlackResponseDoc responseDoc = cut.getScores(requestDoc);
 
         /*
          * ```Scores:

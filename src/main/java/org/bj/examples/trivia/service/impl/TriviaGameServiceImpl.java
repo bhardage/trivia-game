@@ -116,7 +116,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final SlackUser user = new SlackUser(requestDoc.getUserId(), requestDoc.getUsername());
 
-        scoreService.createUserIfNotExists(user);
+        scoreService.createUserIfNotExists(requestDoc.getChannelId(), user);
 
         responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
         responseDoc.setText(null);
@@ -150,7 +150,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         }
 
         try {
-            scoreService.incrementScore(userId);
+            scoreService.incrementScore(requestDoc.getChannelId(), userId);
         } catch (ScoreException e) {
             responseDoc.setText("User " + target + " does not exist. Please choose a valid user.");
             responseDoc.setAttachments(Arrays.asList(new SlackAttachment("Usage: `/moviegame correct @jsmith Blue skies`")));
@@ -171,7 +171,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         }
 
         text += "!\n\n";
-        text += generateScoreText();
+        text += generateScoreText(requestDoc);
         text += "\n\nOK, <@" + userId + ">, you're up!";
 
         delayedResponseDoc.setText(text);
@@ -185,13 +185,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-        responseDoc.setText(generateScoreText());
+        responseDoc.setText(generateScoreText(requestDoc));
 
         return responseDoc;
     }
 
     public SlackResponseDoc resetScores(final SlackRequestDoc requestDoc) {
-        scoreService.resetScores();
+        scoreService.resetScores(requestDoc.getChannelId());
 
         //TODO If this remains across all channels, let them all know scores have been reset
 
@@ -199,13 +199,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
         responseDoc.setText("Scores have been reset!");
-        responseDoc.setAttachments(Arrays.asList(new SlackAttachment(generateScoreText())));
+        responseDoc.setAttachments(Arrays.asList(new SlackAttachment(generateScoreText(requestDoc))));
 
         return responseDoc;
     }
 
-    private String generateScoreText() {
-        final Map<SlackUser, Long> scoresByUser = scoreService.getAllScoresByUser();
+    private String generateScoreText(final SlackRequestDoc requestDoc) {
+        final Map<SlackUser, Long> scoresByUser = scoreService.getAllScoresByUser(requestDoc.getChannelId());
 
         final String scoreText;
 
