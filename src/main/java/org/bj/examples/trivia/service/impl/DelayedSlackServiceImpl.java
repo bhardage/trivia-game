@@ -2,42 +2,26 @@ package org.bj.examples.trivia.service.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bj.examples.trivia.TriviaApplication.PubsubOutboundGateway;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
-import org.bj.examples.trivia.message.DelayedSlackMessage;
 import org.bj.examples.trivia.service.DelayedSlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class DelayedSlackServiceImpl implements DelayedSlackService {
     private static final Log log = LogFactory.getLog(DelayedSlackServiceImpl.class);
 
-    private final PubsubOutboundGateway messagingGateway;
-    private final ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public DelayedSlackServiceImpl(
-            final PubsubOutboundGateway messagingGateway,
-            final ObjectMapper objectMapper
-    ) {
-        this.messagingGateway = messagingGateway;
-        this.objectMapper = objectMapper;
+    public DelayedSlackServiceImpl(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public void sendResponse(final String url, final SlackResponseDoc responseDoc) {
-        try {
-            final DelayedSlackMessage message = new DelayedSlackMessage(url, responseDoc);
-            final String messageText = objectMapper.writeValueAsString(message);
+        log.info("Sending message to URL \"" + url + "\".");
 
-            log.info("Sending message to URL \"" + url + "\". Complete message: " + messageText);
-
-            messagingGateway.sendToPubsub(messageText);
-        } catch (JsonProcessingException e) {
-            log.error("An unhandled exception occurred: ", e);
-        }
+        new Thread(() -> restTemplate.postForObject(url, responseDoc, String.class)).start();
     }
 }
