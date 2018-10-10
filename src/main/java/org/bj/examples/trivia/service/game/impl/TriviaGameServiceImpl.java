@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.game.impl;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -13,9 +13,9 @@ import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackResponseType;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
-import org.bj.examples.trivia.service.DelayedSlackService;
-import org.bj.examples.trivia.service.ScoreService;
-import org.bj.examples.trivia.service.TriviaGameService;
+import org.bj.examples.trivia.service.game.TriviaGameService;
+import org.bj.examples.trivia.service.score.ScoreService;
+import org.bj.examples.trivia.service.slack.DelayedSlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

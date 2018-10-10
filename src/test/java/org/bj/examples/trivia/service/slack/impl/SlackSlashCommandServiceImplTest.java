@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.slack.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackResponseType;
-import org.bj.examples.trivia.service.TriviaGameService;
+import org.bj.examples.trivia.service.game.TriviaGameService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

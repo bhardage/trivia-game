@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.score.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
-import org.bj.examples.trivia.service.ScoreService;
+import org.bj.examples.trivia.service.score.ScoreService;
 import org.springframework.stereotype.Service;
 
 //@Service

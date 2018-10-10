@@ -2,7 +2,7 @@ package org.bj.examples.trivia.controller;
 
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
-import org.bj.examples.trivia.service.SlackSlashCommandService;
+import org.bj.examples.trivia.service.slack.SlackSlashCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

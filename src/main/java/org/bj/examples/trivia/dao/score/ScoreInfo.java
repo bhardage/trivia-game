@@ -1,7 +1,6 @@
-package org.bj.examples.trivia.dao.scoreinfo;
+package org.bj.examples.trivia.dao.score;
 
 public class ScoreInfo {
-    public static final String ID_KEY = "id";
     public static final String CHANNEL_ID_KEY = "channelId";
     public static final String USER_ID_KEY = "userId";
     public static final String USERNAME_KEY = "username";

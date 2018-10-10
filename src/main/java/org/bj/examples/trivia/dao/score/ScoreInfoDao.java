@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.dao.scoreinfo;
+package org.bj.examples.trivia.dao.score;
 
 import java.util.List;
 import java.util.stream.Collectors;

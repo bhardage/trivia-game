@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.game.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -9,7 +9,7 @@ import java.util.Map;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackUser;
-import org.bj.examples.trivia.service.ScoreService;
+import org.bj.examples.trivia.service.score.ScoreService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

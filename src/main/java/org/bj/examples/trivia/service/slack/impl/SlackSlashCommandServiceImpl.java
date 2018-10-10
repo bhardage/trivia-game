@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.slack.impl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.bj.examples.trivia.dto.SlackAttachment;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackResponseType;
-import org.bj.examples.trivia.service.SlackSlashCommandService;
-import org.bj.examples.trivia.service.TriviaGameService;
+import org.bj.examples.trivia.service.game.TriviaGameService;
+import org.bj.examples.trivia.service.slack.SlackSlashCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

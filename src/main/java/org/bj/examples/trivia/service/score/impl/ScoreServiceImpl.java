@@ -1,15 +1,14 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.score.impl;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.bj.examples.trivia.dao.scoreinfo.ScoreInfo;
-import org.bj.examples.trivia.dao.scoreinfo.ScoreInfoDao;
+import org.bj.examples.trivia.dao.score.ScoreInfo;
+import org.bj.examples.trivia.dao.score.ScoreInfoDao;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
-import org.bj.examples.trivia.service.ScoreService;
-import org.springframework.stereotype.Service;
+import org.bj.examples.trivia.service.score.ScoreService;
 
 @Service
 public class ScoreServiceImpl implements ScoreService {

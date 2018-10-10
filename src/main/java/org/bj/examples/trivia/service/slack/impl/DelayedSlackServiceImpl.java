@@ -1,9 +1,9 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.slack.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
-import org.bj.examples.trivia.service.DelayedSlackService;
+import org.bj.examples.trivia.service.slack.DelayedSlackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

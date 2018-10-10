@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service;
+package org.bj.examples.trivia.service.score;
 
 import java.util.Map;
 
