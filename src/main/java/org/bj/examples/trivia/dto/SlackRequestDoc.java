@@ -1,5 +1,8 @@
 package org.bj.examples.trivia.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(converter = SlackRequestDocConverter.class)
 public class SlackRequestDoc {
     private String token;
 
