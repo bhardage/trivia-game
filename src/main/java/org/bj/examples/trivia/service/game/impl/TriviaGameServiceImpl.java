@@ -57,12 +57,18 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         return responseDoc;
     }
 
-    /**
-     * This method is used when a person is supposed to be
-     * selecting a quote but they don't want to
-     */
     public SlackResponseDoc stop(final SlackRequestDoc requestDoc) {
-        return SlackResponseDoc.EMPTY;
+        try {
+            workflowService.onGameStopped(requestDoc.getChannelId(), requestDoc.getUserId());
+        } catch (WorkflowException e) {
+            return SlackResponseDoc.failure(e.getMessage());
+        }
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+        responseDoc.setText("The game has been stopped but scores have not been cleared. If you'd like to start a new game, try `/moviegame start`.");
+
+        return responseDoc;
     }
 
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {

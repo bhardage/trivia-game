@@ -42,6 +42,24 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowDao.save(workflow);
     }
 
+    public void onGameStopped(final String channelId, final String userId) throws WorkflowException {
+        if (channelId == null || userId == null) {
+            return;
+        }
+
+        final Workflow workflow = workflowDao.findByChannelId(channelId);
+
+        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+        } else if (!userId.equals(workflow.getControllingUserId())) {
+            throw new WorkflowException("<@" + workflow.getControllingUserId() + "> is currently hosting.");
+        }
+
+        workflow.setControllingUserId(null);
+        workflow.setStage(WorkflowStage.NOT_STARTED);
+        workflowDao.save(workflow);
+    }
+
     public void onQuestionSubmission(final String channelId, final String userId) throws WorkflowException {
         if (channelId == null || userId == null) {
             return;

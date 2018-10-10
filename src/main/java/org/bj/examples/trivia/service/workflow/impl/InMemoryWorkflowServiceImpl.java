@@ -28,6 +28,21 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         currentHost = user;
     }
 
+    public void onGameStopped(final String channelId, final String userId) throws WorkflowException {
+        if (userId == null) {
+            return;
+        }
+
+        if (currentHost == null) {
+            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+        } else if (currentHost.getUserId().equals(userId)) {
+            throw new WorkflowException("<@" + currentHost.getUserId() + "> is currently hosting.");
+        }
+
+        currentHost = null;
+        questionSubmitted = false;
+    }
+
     public void onQuestionSubmission(final String channelId, final String userId) throws WorkflowException {
         if (userId == null) {
             return;
