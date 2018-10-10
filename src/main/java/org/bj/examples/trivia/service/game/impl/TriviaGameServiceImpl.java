@@ -16,12 +16,14 @@ import org.bj.examples.trivia.service.game.TriviaGameService;
 import org.bj.examples.trivia.service.score.ScoreService;
 import org.bj.examples.trivia.service.slack.DelayedSlackService;
 import org.bj.examples.trivia.service.workflow.WorkflowService;
+import org.bj.examples.trivia.util.SlackUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String SCORES_FORMAT = "```Scores:\n\n%s```";
+    private static final String NO_CORRECT_ANSWER_TARGET = "none";
 
     private final ScoreService scoreService;
     private final WorkflowService workflowService;
@@ -43,7 +45,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         final String userId = requestDoc.getUserId();
 
         try {
-            workflowService.startGame(channelId, userId);
+            workflowService.onGameStarted(channelId, userId);
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -105,18 +107,20 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         try {
             workflowService.onCorrectAnswer(requestDoc.getChannelId(), requestDoc.getUserId());
 
-            if (target.equalsIgnoreCase("none")) {
-                //"Change" turns back to the original host to reset the workflow state
+            if (target.equalsIgnoreCase(NO_CORRECT_ANSWER_TARGET)) {
+                //"Change" back to the original host to reset the workflow state
                 workflowService.onTurnChange(requestDoc.getChannelId(), requestDoc.getUserId(), requestDoc.getUserId());
 
                 text = "It looks like no one was able to answer that one!\n\n";
                 text += generateScoreText(requestDoc);
                 text += "\n\nOK, <@" + requestDoc.getUserId() + ">, let's try another one!";
             } else {
-                scoreService.incrementScore(requestDoc.getChannelId(), target);
-                workflowService.onTurnChange(requestDoc.getChannelId(), requestDoc.getUserId(), target);
+                final String userId = SlackUtils.normalizeId(target);
 
-                text = "<@" + target + "> is correct";
+                scoreService.incrementScore(requestDoc.getChannelId(), userId);
+                workflowService.onTurnChange(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
+
+                text = "<@" + userId + "> is correct";
 
                 if (answer != null) {
                     text += " with \"" + answer + "\"";
@@ -124,7 +128,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
                 text += "!\n\n";
                 text += generateScoreText(requestDoc);
-                text += "\n\nOK, <@" + target + ">, you're up!";
+                text += "\n\nOK, <@" + userId + ">, you're up!";
             }
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());

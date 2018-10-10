@@ -10,7 +10,7 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
     private SlackUser currentHost = null;
     private boolean questionSubmitted = false;
 
-    public void startGame(final String channelId, final String userId) throws WorkflowException {
+    public void onGameStarted(final String channelId, final String userId) throws WorkflowException {
         if (userId == null) {
             return;
         }

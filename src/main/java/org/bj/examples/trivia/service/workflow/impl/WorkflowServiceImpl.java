@@ -16,7 +16,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         this.workflowDao = workflowDao;
     }
 
-    public void startGame(final String channelId, final String userId) throws WorkflowException {
+    public void onGameStarted(final String channelId, final String userId) throws WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
