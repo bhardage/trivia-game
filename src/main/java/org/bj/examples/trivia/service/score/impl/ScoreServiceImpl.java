@@ -10,7 +10,7 @@ import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.score.ScoreService;
 
-@Service
+//@Service
 public class ScoreServiceImpl implements ScoreService {
     private final ScoreInfoDao scoreInfoDao;
 
