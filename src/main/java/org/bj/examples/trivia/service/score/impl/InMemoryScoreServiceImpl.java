@@ -7,8 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.score.ScoreService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+@Profile("dev")
 @Service
 public class InMemoryScoreServiceImpl implements ScoreService {
     private Map<SlackUser, Long> scoresByUser = new ConcurrentHashMap<>();

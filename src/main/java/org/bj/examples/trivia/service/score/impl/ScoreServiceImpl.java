@@ -9,8 +9,11 @@ import org.bj.examples.trivia.dao.score.ScoreInfoDao;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.score.ScoreService;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
-//@Service
+@Profile("production")
+@Service
 public class ScoreServiceImpl implements ScoreService {
     private final ScoreInfoDao scoreInfoDao;
 

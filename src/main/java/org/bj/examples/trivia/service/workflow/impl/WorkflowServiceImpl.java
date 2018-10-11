@@ -6,8 +6,11 @@ import org.bj.examples.trivia.dao.workflow.WorkflowStage;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bj.examples.trivia.service.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
 
-//@Service
+@Profile("production")
+@Service
 public class WorkflowServiceImpl implements WorkflowService {
     private final WorkflowDao workflowDao;
 

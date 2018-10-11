@@ -3,8 +3,10 @@ package org.bj.examples.trivia.service.workflow.impl;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bj.examples.trivia.service.workflow.WorkflowService;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+@Profile("dev")
 @Service
 public class InMemoryWorkflowServiceImpl implements WorkflowService {
     private SlackUser currentHost = null;
