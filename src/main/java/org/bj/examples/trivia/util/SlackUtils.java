@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlackUtils {
-    private static final Pattern SLACK_ID_PATTERN = Pattern.compile("^<@(.+?)(\\|.+)?>$");
+    private static final Pattern SLACK_ID_PATTERN = Pattern.compile("^<@(.+?)(\\|.*)?>$");
 
     public static String normalizeId(final String slackId) {
         if (slackId == null) {
