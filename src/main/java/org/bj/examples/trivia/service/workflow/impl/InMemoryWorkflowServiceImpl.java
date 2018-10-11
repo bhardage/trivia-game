@@ -46,7 +46,7 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         questionSubmitted = false;
     }
 
-    public void onQuestionSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onQuestionSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
@@ -66,7 +66,7 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         questionSubmitted = true;
     }
 
-    public void onAnswerSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onAnswerSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
@@ -80,7 +80,7 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onCorrectAnswer(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onCorrectAnswerSelected(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
@@ -94,7 +94,7 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onTurnChange(final String channelId, final String userId, final String newControllingUserId)
+    public void onTurnChanged(final String channelId, final String userId, final String newControllingUserId)
             throws GameNotStartedException, WorkflowException {
         if (userId == null || newControllingUserId == null) {
             return;

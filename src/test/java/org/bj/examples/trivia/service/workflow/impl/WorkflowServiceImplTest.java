@@ -267,13 +267,13 @@ public class WorkflowServiceImplTest {
     }
     //endregion
 
-    //region onQuestionSubmission
+    //region onQuestionSubmitted
     @Test
-    public void testOnQuestionSubmissionWithNullChannelId() {
+    public void testOnQuestionSubmittedWithNullChannelId() {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(null, "12345");
+            cut.onQuestionSubmitted(null, "12345");
         } catch (Exception e) {
             exception = e;
         }
@@ -284,11 +284,11 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithNullUserId() {
+    public void testOnQuestionSubmittedWithNullUserId() {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission("12345", null);
+            cut.onQuestionSubmitted("12345", null);
         } catch (Exception e) {
             exception = e;
         }
@@ -299,7 +299,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithNoExistingWorkflow() {
+    public void testOnQuestionSubmittedWithNoExistingWorkflow() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -308,7 +308,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -321,7 +321,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithDifferentHostAndQuestionAsked() {
+    public void testOnQuestionSubmittedWithDifferentHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -338,7 +338,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -352,7 +352,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithDifferentHostAndNoQuestionAsked() {
+    public void testOnQuestionSubmittedWithDifferentHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -369,7 +369,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -383,7 +383,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithSameHostAndQuestionAsked() {
+    public void testOnQuestionSubmittedWithSameHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -399,7 +399,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -413,7 +413,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnQuestionSubmissionWithSameHostAndNoQuestionAsked() {
+    public void testOnQuestionSubmittedWithSameHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -429,7 +429,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmission(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -449,13 +449,13 @@ public class WorkflowServiceImplTest {
     }
     //endregion
 
-    //region onAnswerSubmission
+    //region onAnswerSubmitted
     @Test
-    public void testOnAnswerSubmissionWithNullChannelId() {
+    public void testOnAnswerSubmittedWithNullChannelId() {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(null, "12345");
+            cut.onAnswerSubmitted(null, "12345");
         } catch (Exception e) {
             exception = e;
         }
@@ -466,11 +466,11 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithNullUserId() {
+    public void testOnAnswerSubmittedWithNullUserId() {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission("12345", null);
+            cut.onAnswerSubmitted("12345", null);
         } catch (Exception e) {
             exception = e;
         }
@@ -481,7 +481,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithNoExistingWorkflow() {
+    public void testOnAnswerSubmittedWithNoExistingWorkflow() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -490,7 +490,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -502,7 +502,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithSameHostAndNoQuestionAsked() {
+    public void testOnAnswerSubmittedWithSameHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -518,7 +518,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -531,7 +531,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithSameHostAndQuestionAsked() {
+    public void testOnAnswerSubmittedWithSameHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -547,7 +547,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -560,7 +560,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithDifferentHostAndNoQuestionAsked() {
+    public void testOnAnswerSubmittedWithDifferentHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -577,7 +577,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -590,7 +590,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnAnswerSubmissionWithDifferentHostAndQuestionAsked() {
+    public void testOnAnswerSubmittedWithDifferentHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -607,7 +607,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmission(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -618,13 +618,13 @@ public class WorkflowServiceImplTest {
     }
     //endregion
 
-    //region onCorrectAnswer
+    //region onCorrectAnswerSelected
     @Test
-    public void testOnCorrectAnswerWithNullChannelId() {
+    public void testOnCorrectAnswerSelectedWithNullChannelId() {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(null, "12345");
+            cut.onCorrectAnswerSelected(null, "12345");
         } catch (Exception e) {
             exception = e;
         }
@@ -635,11 +635,11 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithNullUserId() {
+    public void testOnCorrectAnswerSelectedWithNullUserId() {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer("12345", null);
+            cut.onCorrectAnswerSelected("12345", null);
         } catch (Exception e) {
             exception = e;
         }
@@ -650,7 +650,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithNoExistingWorkflow() {
+    public void testOnCorrectAnswerSelectedWithNoExistingWorkflow() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -659,7 +659,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(channelId, userId);
+            cut.onCorrectAnswerSelected(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -671,7 +671,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithDifferentHostAndNoQuestionAsked() {
+    public void testOnCorrectAnswerSelectedWithDifferentHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -688,7 +688,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(channelId, userId);
+            cut.onCorrectAnswerSelected(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -701,7 +701,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithDifferentHostAndQuestionAsked() {
+    public void testOnCorrectAnswerSelectedWithDifferentHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
@@ -718,7 +718,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(channelId, userId);
+            cut.onCorrectAnswerSelected(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -731,7 +731,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithSameHostAndNoQuestionAsked() {
+    public void testOnCorrectAnswerSelectedWithSameHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -747,7 +747,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(channelId, userId);
+            cut.onCorrectAnswerSelected(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -760,7 +760,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnCorrectAnswerWithSameHostAndQuestionAsked() {
+    public void testOnCorrectAnswerSelectedWithSameHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
 
@@ -776,7 +776,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onCorrectAnswer(channelId, userId);
+            cut.onCorrectAnswerSelected(channelId, userId);
         } catch (Exception e) {
             exception = e;
         }
@@ -787,13 +787,13 @@ public class WorkflowServiceImplTest {
     }
     //endregion
 
-    //region onTurnChange
+    //region onTurnChanged
     @Test
-    public void testOnTurnChangeWithNullChannelId() {
+    public void testOnTurnChangedWithNullChannelId() {
         Exception exception = null;
 
         try {
-            cut.onTurnChange(null, "12345", "6789");
+            cut.onTurnChanged(null, "12345", "6789");
         } catch (Exception e) {
             exception = e;
         }
@@ -804,11 +804,11 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnTurnChangeWithNullUserId() {
+    public void testOnTurnChangedWithNullUserId() {
         Exception exception = null;
 
         try {
-            cut.onTurnChange("12345", null, "6789");
+            cut.onTurnChanged("12345", null, "6789");
         } catch (Exception e) {
             exception = e;
         }
@@ -819,11 +819,11 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnTurnChangeWithNullControllingUserId() {
+    public void testOnTurnChangedWithNullControllingUserId() {
         Exception exception = null;
 
         try {
-            cut.onTurnChange("12345", "6789", null);
+            cut.onTurnChanged("12345", "6789", null);
         } catch (Exception e) {
             exception = e;
         }
@@ -834,7 +834,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnTurnChangeWithNoExistingWorkflow() {
+    public void testOnTurnChangedWithNoExistingWorkflow() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String newControllingUserId = "U1532";
@@ -844,7 +844,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onTurnChange(channelId, userId, newControllingUserId);
+            cut.onTurnChanged(channelId, userId, newControllingUserId);
         } catch (Exception e) {
             exception = e;
         }
@@ -857,7 +857,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnTurnChangeWithDifferentHost() {
+    public void testOnTurnChangedWithDifferentHost() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String newControllingUserId = "U1532";
@@ -875,7 +875,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onTurnChange(channelId, userId, newControllingUserId);
+            cut.onTurnChanged(channelId, userId, newControllingUserId);
         } catch (Exception e) {
             exception = e;
         }
@@ -889,7 +889,7 @@ public class WorkflowServiceImplTest {
     }
 
     @Test
-    public void testOnTurnChangeWithSameHost() {
+    public void testOnTurnChangedWithSameHost() {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String newControllingUserId = "U1532";
@@ -906,7 +906,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onTurnChange(channelId, userId, newControllingUserId);
+            cut.onTurnChanged(channelId, userId, newControllingUserId);
         } catch (Exception e) {
             exception = e;
         }

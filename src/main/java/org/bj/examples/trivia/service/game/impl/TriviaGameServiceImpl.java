@@ -78,7 +78,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {
         try {
-            workflowService.onQuestionSubmission(requestDoc.getChannelId(), requestDoc.getUserId());
+            workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
@@ -99,7 +99,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
     public SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer) {
         try {
-            workflowService.onAnswerSubmission(requestDoc.getChannelId(), requestDoc.getUserId());
+            workflowService.onAnswerSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
@@ -120,11 +120,11 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         String text;
 
         try {
-            workflowService.onCorrectAnswer(requestDoc.getChannelId(), requestDoc.getUserId());
+            workflowService.onCorrectAnswerSelected(requestDoc.getChannelId(), requestDoc.getUserId());
 
             if (target.equalsIgnoreCase(NO_CORRECT_ANSWER_TARGET)) {
                 //"Change" back to the original host to reset the workflow state
-                workflowService.onTurnChange(requestDoc.getChannelId(), requestDoc.getUserId(), requestDoc.getUserId());
+                workflowService.onTurnChanged(requestDoc.getChannelId(), requestDoc.getUserId(), requestDoc.getUserId());
 
                 text = "It looks like no one was able to answer that one!\n\n";
                 text += generateScoreText(requestDoc);
@@ -133,7 +133,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                 final String userId = SlackUtils.normalizeId(target);
 
                 scoreService.incrementScore(requestDoc.getChannelId(), userId);
-                workflowService.onTurnChange(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
+                workflowService.onTurnChanged(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
 
                 text = "<@" + userId + "> is correct";
 

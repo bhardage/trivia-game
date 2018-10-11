@@ -59,7 +59,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowDao.delete(workflow.getId());
     }
 
-    public void onQuestionSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onQuestionSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -82,7 +82,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowDao.save(workflow);
     }
 
-    public void onAnswerSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onAnswerSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -98,7 +98,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onCorrectAnswer(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onCorrectAnswerSelected(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -114,7 +114,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onTurnChange(final String channelId, final String userId, final String newControllingUserId)
+    public void onTurnChanged(final String channelId, final String userId, final String newControllingUserId)
             throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null || newControllingUserId == null) {
             return;
