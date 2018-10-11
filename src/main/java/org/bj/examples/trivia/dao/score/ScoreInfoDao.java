@@ -64,7 +64,7 @@ public class ScoreInfoDao extends BaseDao {
             scoreInfoEntity = datastore.add(scoreInfoToEntity(key, scoreInfo));
         } else {
             final Key key = keyFactory.newKey(scoreInfo.getId());
-            datastore.update((Entity)scoreInfoToEntity(key, scoreInfo));
+            datastore.update(scoreInfoToEntity(key, scoreInfo));
         }
 
         return entityToScoreInfo(scoreInfoEntity);
@@ -83,7 +83,16 @@ public class ScoreInfoDao extends BaseDao {
         datastore.delete(keys.toArray(new Key[0]));
     }
 
-    private FullEntity<?> scoreInfoToEntity(final IncompleteKey key, final ScoreInfo scoreInfo) {
+    private FullEntity<IncompleteKey> scoreInfoToEntity(final IncompleteKey key, final ScoreInfo scoreInfo) {
+        return Entity.newBuilder(key)
+                .set(ScoreInfo.CHANNEL_ID_KEY, scoreInfo.getChannelId())
+                .set(ScoreInfo.USER_ID_KEY, scoreInfo.getUserId())
+                .set(ScoreInfo.USERNAME_KEY, scoreInfo.getUsername())
+                .set(ScoreInfo.SCORE_KEY, scoreInfo.getScore())
+                .build();
+    }
+
+    private Entity scoreInfoToEntity(final Key key, final ScoreInfo scoreInfo) {
         return Entity.newBuilder(key)
                 .set(ScoreInfo.CHANNEL_ID_KEY, scoreInfo.getChannelId())
                 .set(ScoreInfo.USER_ID_KEY, scoreInfo.getUserId())

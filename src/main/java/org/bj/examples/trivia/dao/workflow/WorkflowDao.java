@@ -2,6 +2,7 @@ package org.bj.examples.trivia.dao.workflow;
 
 import org.bj.examples.trivia.dao.BaseDao;
 import org.bj.examples.trivia.dao.score.ScoreInfo;
+import org.springframework.stereotype.Service;
 
 import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.FullEntity;
@@ -11,6 +12,7 @@ import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
+@Service
 public class WorkflowDao extends BaseDao {
     public WorkflowDao() {
         super("Workflow");
@@ -43,13 +45,21 @@ public class WorkflowDao extends BaseDao {
             workflowEntity = datastore.add(workflowToEntity(key, workflow));
         } else {
             final Key key = keyFactory.newKey(workflow.getId());
-            datastore.update((Entity)workflowToEntity(key, workflow));
+            datastore.update(workflowToEntity(key, workflow));
         }
 
         return entityToWorkflow(workflowEntity);
     }
 
-    private FullEntity<?> workflowToEntity(final IncompleteKey key, final Workflow workflow) {
+    private FullEntity<IncompleteKey> workflowToEntity(final IncompleteKey key, final Workflow workflow) {
+        return Entity.newBuilder(key)
+                .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
+                .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
+                .set(Workflow.STAGE_KEY, workflow.getStage().toString())
+                .build();
+    }
+
+    private Entity workflowToEntity(final Key key, final Workflow workflow) {
         return Entity.newBuilder(key)
                 .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
                 .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
