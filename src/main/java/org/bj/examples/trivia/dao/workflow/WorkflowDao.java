@@ -84,6 +84,7 @@ public class WorkflowDao extends BaseDao {
                 .id(entity.getKey().getId())
                 .channelId(entity.getString(Workflow.CHANNEL_ID_KEY))
                 .controllingUserId(entity.getString(Workflow.CONTROLLING_USER_ID_KEY))
+                .question(entity.getString(Workflow.QUESTION_KEY))
                 .stage(WorkflowStage.valueOf(entity.getString(Workflow.STAGE_KEY)))
                 .build();
     }
