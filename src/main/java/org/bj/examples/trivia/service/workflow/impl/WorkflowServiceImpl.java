@@ -95,6 +95,8 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
             throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+        } else if (userId.equals(workflow.getControllingUserId())) {
+            throw new WorkflowException("You can't answer your own question!");
         } else if (workflow.getStage() != WorkflowStage.QUESTION_ASKED) {
             throw new WorkflowException("A question has not yet been submitted. Please wait for <@" + workflow.getControllingUserId() + "> to ask a question.");
         }
