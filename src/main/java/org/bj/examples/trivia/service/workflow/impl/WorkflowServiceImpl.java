@@ -58,9 +58,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             throw new WorkflowException("<@" + workflow.getControllingUserId() + "> is currently hosting.");
         }
 
-        workflow.setControllingUserId(null);
-        workflow.setStage(WorkflowStage.NOT_STARTED);
-        workflowDao.save(workflow);
+        workflowDao.delete(workflow.getId());
     }
 
     public void onQuestionSubmission(final String channelId, final String userId) throws WorkflowException {

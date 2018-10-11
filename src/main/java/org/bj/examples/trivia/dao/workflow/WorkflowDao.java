@@ -1,5 +1,8 @@
 package org.bj.examples.trivia.dao.workflow;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bj.examples.trivia.dao.BaseDao;
 import org.bj.examples.trivia.dao.score.ScoreInfo;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,10 @@ public class WorkflowDao extends BaseDao {
         }
 
         return entityToWorkflow(workflowEntity);
+    }
+
+    public void delete(final Long id) {
+        datastore.delete(keyFactory.newKey(id));
     }
 
     private FullEntity<IncompleteKey> workflowToEntity(final IncompleteKey key, final Workflow workflow) {
