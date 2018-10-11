@@ -27,7 +27,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow != null && workflow.getStage() != WorkflowStage.NOT_STARTED) {
+        if (workflow != null) {
             final String message = userId.equals(workflow.getControllingUserId()) ?
                     "You are already hosting!" :
                     "<@" + workflow.getControllingUserId() + "> is currently hosting.";
@@ -35,14 +35,11 @@ public class WorkflowServiceImpl implements WorkflowService {
             throw new WorkflowException(message);
         }
 
-        if (workflow == null) {
-            workflow = new Workflow.Builder()
-                    .channelId(channelId)
-                    .build();
-        }
-
-        workflow.setStage(WorkflowStage.STARTED);
-        workflow.setControllingUserId(userId);
+        workflow = new Workflow.Builder()
+                .channelId(channelId)
+                .stage(WorkflowStage.STARTED)
+                .controllingUserId(userId)
+                .build();
         workflowDao.save(workflow);
     }
 
@@ -53,7 +50,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         final Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+        if (workflow == null) {
             throw new GameNotStartedException();
         } else if (!userId.equals(workflow.getControllingUserId())) {
             throw new WorkflowException("<@" + workflow.getControllingUserId() + "> is currently hosting.");
@@ -69,7 +66,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         final Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+        if (workflow == null) {
             throw new GameNotStartedException();
         } else {
             boolean isControllingUser = userId.equals(workflow.getControllingUserId());
@@ -92,7 +89,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         final Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+        if (workflow == null) {
             throw new GameNotStartedException();
         } else if (userId.equals(workflow.getControllingUserId())) {
             throw new WorkflowException("You can't answer your own question!");
@@ -108,7 +105,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         final Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+        if (workflow == null) {
             throw new GameNotStartedException();
         } else if (!userId.equals(workflow.getControllingUserId())) {
             throw new WorkflowException("It's <@" + workflow.getControllingUserId() + ">'s turn; only he/she can mark an answer correct.");
@@ -125,7 +122,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         Workflow workflow = workflowDao.findByChannelId(channelId);
 
-        if (workflow == null || workflow.getStage() == WorkflowStage.NOT_STARTED) {
+        if (workflow == null) {
             throw new GameNotStartedException();
         } else if (!userId.equals(workflow.getControllingUserId())) {
             throw new WorkflowException("It's <@" + workflow.getControllingUserId() + ">'s turn; only he/she can cede his/her turn.");
