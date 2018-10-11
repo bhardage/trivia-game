@@ -28,7 +28,7 @@ public class InMemoryWorkflowServiceImplTest {
         final String userId = "U12345";
 
         setCurrentHost(null);
-        setQuestionSubmitted(false);
+        setQuestion(null);
 
         Exception exception = null;
 
@@ -40,13 +40,13 @@ public class InMemoryWorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
         assertThat(getCurrentHost(), is(equalTo(new SlackUser(userId, null))));
-        assertThat(getQuestionSubmitted(), is(equalTo(false)));
+        assertThat(getQuestion(), is(nullValue()));
     }
 
     @Test
     public void testOnGameStartedWithNullUserId() {
         setCurrentHost(null);
-        setQuestionSubmitted(false);
+        setQuestion(null);
 
         Exception exception = null;
 
@@ -58,7 +58,7 @@ public class InMemoryWorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
         assertThat(getCurrentHost(), is(nullValue()));
-        assertThat(getQuestionSubmitted(), is(equalTo(false)));
+        assertThat(getQuestion(), is(nullValue()));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class InMemoryWorkflowServiceImplTest {
         final String userId = "U6789";
 
         setCurrentHost(new SlackUser(userId, null));
-        setQuestionSubmitted(false);
+        setQuestion(null);
 
         Exception exception = null;
 
@@ -89,7 +89,7 @@ public class InMemoryWorkflowServiceImplTest {
         final String controllingUserId = "U1346";
 
         setCurrentHost(new SlackUser(controllingUserId, null));
-        setQuestionSubmitted(false);
+        setQuestion(null);
 
         Exception exception = null;
 
@@ -110,7 +110,7 @@ public class InMemoryWorkflowServiceImplTest {
         final String userId = "U6789";
 
         setCurrentHost(null);
-        setQuestionSubmitted(false);
+        setQuestion(null);
 
         Exception exception = null;
 
@@ -122,7 +122,7 @@ public class InMemoryWorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
         assertThat(getCurrentHost(), is(equalTo(new SlackUser(userId, null))));
-        assertThat(getQuestionSubmitted(), is(equalTo(false)));
+        assertThat(getQuestion(), is(nullValue()));
     }
     //endregion
 
@@ -140,17 +140,17 @@ public class InMemoryWorkflowServiceImplTest {
         ReflectionUtils.setField(currentHostField, cut, currentHost);
     }
 
-    private boolean getQuestionSubmitted() {
-        final Field questionSubmittedField = ReflectionUtils.findField(InMemoryWorkflowServiceImpl.class, "questionSubmitted");
-        ReflectionUtils.makeAccessible(questionSubmittedField);
+    private String getQuestion() {
+        final Field questionField = ReflectionUtils.findField(InMemoryWorkflowServiceImpl.class, "question");
+        ReflectionUtils.makeAccessible(questionField);
 
-        return ((Boolean)ReflectionUtils.getField(questionSubmittedField, cut)).booleanValue();
+        return ((String)ReflectionUtils.getField(questionField, cut));
     }
 
-    private void setQuestionSubmitted(final boolean questionSubmitted) {
-        final Field questionSubmittedField = ReflectionUtils.findField(InMemoryWorkflowServiceImpl.class, "questionSubmitted");
-        ReflectionUtils.makeAccessible(questionSubmittedField);
+    private void setQuestion(final String question) {
+        final Field questionField = ReflectionUtils.findField(InMemoryWorkflowServiceImpl.class, "question");
+        ReflectionUtils.makeAccessible(questionField);
 
-        ReflectionUtils.setField(questionSubmittedField, cut, questionSubmitted);
+        ReflectionUtils.setField(questionField, cut, question);
     }
 }

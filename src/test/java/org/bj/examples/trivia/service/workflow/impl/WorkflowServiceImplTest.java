@@ -273,7 +273,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(null, "12345");
+            cut.onQuestionSubmitted(null, "12345", "test question");
         } catch (Exception e) {
             exception = e;
         }
@@ -288,7 +288,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted("12345", null);
+            cut.onQuestionSubmitted("12345", null, "test question");
         } catch (Exception e) {
             exception = e;
         }
@@ -302,13 +302,14 @@ public class WorkflowServiceImplTest {
     public void testOnQuestionSubmittedWithNoExistingWorkflow() {
         final String channelId = "C12345";
         final String userId = "U6789";
+        final String question = "test question";
 
         given(workflowDao.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId, question);
         } catch (Exception e) {
             exception = e;
         }
@@ -325,6 +326,7 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
+        final String question = "test question";
 
         final Workflow workflow = new Workflow.Builder()
                 .id(1L)
@@ -338,7 +340,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId, question);
         } catch (Exception e) {
             exception = e;
         }
@@ -356,6 +358,7 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
         final String controllingUserId = "U1346";
+        final String question = "test question";
 
         final Workflow workflow = new Workflow.Builder()
                 .id(1L)
@@ -369,7 +372,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId, question);
         } catch (Exception e) {
             exception = e;
         }
@@ -386,6 +389,7 @@ public class WorkflowServiceImplTest {
     public void testOnQuestionSubmittedWithSameHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
+        final String question = "test question";
 
         final Workflow workflow = new Workflow.Builder()
                 .id(1L)
@@ -399,7 +403,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId, question);
         } catch (Exception e) {
             exception = e;
         }
@@ -416,6 +420,7 @@ public class WorkflowServiceImplTest {
     public void testOnQuestionSubmittedWithSameHostAndNoQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
+        final String question = "test question";
 
         final Workflow workflow = new Workflow.Builder()
                 .id(1L)
@@ -429,7 +434,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onQuestionSubmitted(channelId, userId);
+            cut.onQuestionSubmitted(channelId, userId, question);
         } catch (Exception e) {
             exception = e;
         }
@@ -445,6 +450,7 @@ public class WorkflowServiceImplTest {
         assertThat(workflowCaptor.getValue().getId(), is(equalTo(1L)));
         assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
         assertThat(workflowCaptor.getValue().getControllingUserId(), is(equalTo(userId)));
+        assertThat(workflowCaptor.getValue().getQuestion(), is(equalTo(question)));
         assertThat(workflowCaptor.getValue().getStage(), is(equalTo(WorkflowStage.QUESTION_ASKED)));
     }
     //endregion

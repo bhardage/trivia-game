@@ -80,7 +80,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {
         try {
-            workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
+            workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId(), question);
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
