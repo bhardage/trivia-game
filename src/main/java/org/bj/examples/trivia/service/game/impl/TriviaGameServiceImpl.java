@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String SCORES_FORMAT = "```Scores:\n\n%s```";
+    private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
+
     private static final String NO_CORRECT_ANSWER_TARGET = "none";
 
     private final ScoreService scoreService;
@@ -48,7 +50,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         try {
             workflowService.onGameStarted(channelId, userId);
         } catch (GameNotStartedException e) {
-            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -64,7 +66,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         try {
             workflowService.onGameStopped(requestDoc.getChannelId(), requestDoc.getUserId());
         } catch (GameNotStartedException e) {
-            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -80,7 +82,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         try {
             workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
         } catch (GameNotStartedException e) {
-            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -101,7 +103,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         try {
             workflowService.onAnswerSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
         } catch (GameNotStartedException e) {
-            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -109,9 +111,14 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         final SlackUser user = new SlackUser(requestDoc.getUserId(), requestDoc.getUsername());
         scoreService.createUserIfNotExists(requestDoc.getChannelId(), user);
 
+        final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+        delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> answers \"" + answer + "\"");
+        delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
-        responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
-        responseDoc.setText(null);
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("Answer submitted.");
 
         return responseDoc;
     }
@@ -146,7 +153,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                 text += "\n\nOK, <@" + userId + ">, you're up!";
             }
         } catch (GameNotStartedException e) {
-            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         } catch (ScoreException e) {
