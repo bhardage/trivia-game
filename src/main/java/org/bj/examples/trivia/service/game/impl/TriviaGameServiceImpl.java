@@ -10,6 +10,7 @@ import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackResponseType;
 import org.bj.examples.trivia.dto.SlackUser;
+import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bj.examples.trivia.service.game.TriviaGameService;
@@ -46,6 +47,8 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         try {
             workflowService.onGameStarted(channelId, userId);
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -60,13 +63,15 @@ public class TriviaGameServiceImpl implements TriviaGameService {
     public SlackResponseDoc stop(final SlackRequestDoc requestDoc) {
         try {
             workflowService.onGameStopped(requestDoc.getChannelId(), requestDoc.getUserId());
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
-        responseDoc.setText("The game has been stopped but scores have not been cleared. If you'd like to start a new game, try `/moviegame start`.");
+        responseDoc.setText("The game has been stopped but scores have not been cleared. If you'd like to start a new game, try `" + requestDoc.getCommand() + " start`.");
 
         return responseDoc;
     }
@@ -74,6 +79,8 @@ public class TriviaGameServiceImpl implements TriviaGameService {
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {
         try {
             workflowService.onQuestionSubmission(requestDoc.getChannelId(), requestDoc.getUserId());
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -93,6 +100,8 @@ public class TriviaGameServiceImpl implements TriviaGameService {
     public SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer) {
         try {
             workflowService.onAnswerSubmission(requestDoc.getChannelId(), requestDoc.getUserId());
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         }
@@ -136,11 +145,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                 text += generateScoreText(requestDoc);
                 text += "\n\nOK, <@" + userId + ">, you're up!";
             }
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure("A game has not yet been started. If you'd like to start a game, try `" + requestDoc.getCommand() + " start`");
         } catch (WorkflowException e) {
             return SlackResponseDoc.failure(e.getMessage());
         } catch (ScoreException e) {
             final SlackResponseDoc responseDoc = SlackResponseDoc.failure("User " + target + " does not exist. Please choose a valid user.");
-            responseDoc.setAttachments(Arrays.asList(new SlackAttachment("Usage: `/moviegame correct @jsmith Blue skies`")));
+            responseDoc.setAttachments(Arrays.asList(new SlackAttachment("Usage: `" + requestDoc.getCommand() + " correct @jsmith Blue skies`")));
             return responseDoc;
         }
 

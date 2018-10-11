@@ -1,6 +1,7 @@
 package org.bj.examples.trivia.service.workflow.impl;
 
 import org.bj.examples.trivia.dto.SlackUser;
+import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bj.examples.trivia.service.workflow.WorkflowService;
 import org.springframework.context.annotation.Profile;
@@ -30,13 +31,13 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         currentHost = user;
     }
 
-    public void onGameStopped(final String channelId, final String userId) throws WorkflowException {
+    public void onGameStopped(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
 
         if (currentHost == null) {
-            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+            throw new GameNotStartedException();
         } else if (currentHost.getUserId().equals(userId)) {
             throw new WorkflowException("<@" + currentHost.getUserId() + "> is currently hosting.");
         }
@@ -45,13 +46,13 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         questionSubmitted = false;
     }
 
-    public void onQuestionSubmission(final String channelId, final String userId) throws WorkflowException {
+    public void onQuestionSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
 
         if (currentHost == null) {
-            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+            throw new GameNotStartedException();
         } else {
             boolean isControllingUser = currentHost.getUserId().equals(userId);
 
@@ -65,13 +66,13 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         questionSubmitted = true;
     }
 
-    public void onAnswerSubmission(final String channelId, final String userId) throws WorkflowException {
+    public void onAnswerSubmission(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
 
         if (currentHost == null) {
-            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+            throw new GameNotStartedException();
         } else if (currentHost.getUserId().equals(userId)) {
             throw new WorkflowException("You can't answer your own question!");
         } else if (!questionSubmitted) {
@@ -79,13 +80,13 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onCorrectAnswer(final String channelId, final String userId) throws WorkflowException {
+    public void onCorrectAnswer(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
 
         if (currentHost == null) {
-            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+            throw new GameNotStartedException();
         } else if (!currentHost.getUserId().equals(userId)) {
             throw new WorkflowException("It's <@" + currentHost.getUserId() + ">'s question. Only he/she can mark an answer correct.");
         } else if (!questionSubmitted) {
@@ -93,13 +94,14 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         }
     }
 
-    public void onTurnChange(final String channelId, final String userId, final String newControllingUserId) throws WorkflowException {
+    public void onTurnChange(final String channelId, final String userId, final String newControllingUserId)
+            throws GameNotStartedException, WorkflowException {
         if (userId == null || newControllingUserId == null) {
             return;
         }
 
         if (currentHost == null) {
-            throw new WorkflowException("A game has not yet been started. If you'd like to start a game, try `/moviegame start`");
+            throw new GameNotStartedException();
         } else if (!currentHost.getUserId().equals(userId)) {
             throw new WorkflowException("It's <@" + currentHost.getUserId() + ">'s turn; only he/she can cede his/her turn.");
         }

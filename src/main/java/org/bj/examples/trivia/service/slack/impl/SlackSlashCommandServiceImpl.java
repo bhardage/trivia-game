@@ -40,19 +40,19 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                 return triviaGameService.stop(requestDoc);
             case "question":
                 if (commandParts.length < 2) {
-                    return getSubmitQuestionFormat();
+                    return getSubmitQuestionFormat(requestDoc.getCommand());
                 }
 
                 return triviaGameService.submitQuestion(requestDoc, commandText);
             case "answer":
                 if (commandParts.length < 2) {
-                    return getSubmitAnswerFormat();
+                    return getSubmitAnswerFormat(requestDoc.getCommand());
                 }
 
                 return triviaGameService.submitAnswer(requestDoc, commandText);
             case "correct":
                 if (commandParts.length < 2) {
-                    return getMarkAnswerCorrectFormat();
+                    return getMarkAnswerCorrectFormat(requestDoc.getCommand());
                 }
 
                 return triviaGameService.markAnswerCorrect(
@@ -66,49 +66,49 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                 return triviaGameService.resetScores(requestDoc);
         }
 
-        return getUsageFormat();
+        return getUsageFormat(requestDoc.getCommand());
     }
 
-    private SlackResponseDoc getSubmitQuestionFormat() {
+    private SlackResponseDoc getSubmitQuestionFormat(final String command) {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-        responseDoc.setText("To submit a question, use `/moviegame question <QUESTION_TEXT>`.\n\nFor example, `/moviegame question In what year did WWII officially begin?`");
+        responseDoc.setText("To submit a question, use `" + command + " question <QUESTION_TEXT>`.\n\nFor example, `" + command + " question In what year did WWII officially begin?`");
 
         return responseDoc;
     }
 
-    private SlackResponseDoc getSubmitAnswerFormat() {
+    private SlackResponseDoc getSubmitAnswerFormat(final String command) {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-        responseDoc.setText("To submit an answer, use `/moviegame answer <ANSWER_TEXT>`.\n\nFor example, `/moviegame answer Blue skies`");
+        responseDoc.setText("To submit an answer, use `" + command + " answer <ANSWER_TEXT>`.\n\nFor example, `" + command + " answer Blue skies`");
 
         return responseDoc;
     }
 
-    private SlackResponseDoc getMarkAnswerCorrectFormat() {
+    private SlackResponseDoc getMarkAnswerCorrectFormat(final String command) {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-        responseDoc.setText("To mark an answer correct, use `/moviegame correct <USERNAME>`.\n"
-                + "Optional: To include the correct answer, use `/moviegame correct <USERNAME> <CORRECT_ANSWER>`.\n\n"
-                + "For example, `/moviegame correct @jsmith Chris Farley`");
+        responseDoc.setText("To mark an answer correct, use `" + command + " correct <USERNAME>`.\n"
+                + "Optional: To include the correct answer, use `" + command + " correct <USERNAME> <CORRECT_ANSWER>`.\n\n"
+                + "For example, `" + command + " correct @jsmith Chris Farley`");
 
         return responseDoc;
     }
 
-    private SlackResponseDoc getUsageFormat() {
+    private SlackResponseDoc getUsageFormat(final String command) {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-        responseDoc.setText("`/moviegame` usage:");
+        responseDoc.setText("`" + command + "` usage:");
 
         final List<SlackAttachment> attachments = Arrays.asList(
-                new SlackAttachment("To start a new game as the host, use `/moviegame start`"),
-                new SlackAttachment("To ask a question, use `/moviegame question <QUESTION>`. This requires you to be the host."),
-                new SlackAttachment("To answer a question, use `/moviegame answer <ANSWER>`."),
-                new SlackAttachment("To identify a correct answer, use `/moviegame correct <USERNAME> <ANSWER>`. This requires you to be the host."),
-                new SlackAttachment("To view the current socres, use `/moviegame scores`."),
-                new SlackAttachment("To reset all scores, use `/moviegame reset`."),
-                new SlackAttachment("To stop the current game and reset scores, use `/moviegame stop`")
+                new SlackAttachment("To start a new game as the host, use `" + command + " start`"),
+                new SlackAttachment("To ask a question, use `" + command + " question <QUESTION>`. This requires you to be the host."),
+                new SlackAttachment("To answer a question, use `" + command + " answer <ANSWER>`."),
+                new SlackAttachment("To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`. This requires you to be the host."),
+                new SlackAttachment("To view the current socres, use `" + command + " scores`."),
+                new SlackAttachment("To reset all scores, use `" + command + " reset`."),
+                new SlackAttachment("To stop the current game, use `" + command + " stop`")
         );
         responseDoc.setAttachments(attachments);
 
