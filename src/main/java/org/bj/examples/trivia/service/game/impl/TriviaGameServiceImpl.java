@@ -114,7 +114,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
         delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
-        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> answers \"" + answer + "\"");
+        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> answers ``" + answer + "``");
         delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
