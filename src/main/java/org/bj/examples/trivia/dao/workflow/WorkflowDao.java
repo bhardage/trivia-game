@@ -8,8 +8,10 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.NullValue;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
+import com.google.cloud.datastore.StringValue;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 @Service
@@ -59,6 +61,7 @@ public class WorkflowDao extends BaseDao {
         return Entity.newBuilder(key)
                 .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
                 .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
+                .set(Workflow.QUESTION_KEY, workflow.getQuestion() == null ? NullValue.of() : StringValue.of(workflow.getQuestion()))
                 .set(Workflow.STAGE_KEY, workflow.getStage().toString())
                 .build();
     }
@@ -67,6 +70,7 @@ public class WorkflowDao extends BaseDao {
         return Entity.newBuilder(key)
                 .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
                 .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
+                .set(Workflow.QUESTION_KEY, workflow.getQuestion() == null ? NullValue.of() : StringValue.of(workflow.getQuestion()))
                 .set(Workflow.STAGE_KEY, workflow.getStage().toString())
                 .build();
     }

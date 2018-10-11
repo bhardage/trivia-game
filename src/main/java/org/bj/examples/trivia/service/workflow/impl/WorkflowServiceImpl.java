@@ -3,6 +3,7 @@ package org.bj.examples.trivia.service.workflow.impl;
 import org.bj.examples.trivia.dao.workflow.Workflow;
 import org.bj.examples.trivia.dao.workflow.WorkflowDao;
 import org.bj.examples.trivia.dao.workflow.WorkflowStage;
+import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bj.examples.trivia.service.workflow.WorkflowService;
@@ -20,6 +21,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         this.workflowDao = workflowDao;
     }
 
+    @Override
     public void onGameStarted(final String channelId, final String userId) throws WorkflowException {
         if (channelId == null || userId == null) {
             return;
@@ -37,12 +39,14 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         workflow = new Workflow.Builder()
                 .channelId(channelId)
-                .stage(WorkflowStage.STARTED)
                 .controllingUserId(userId)
+                .question(null)
+                .stage(WorkflowStage.STARTED)
                 .build();
         workflowDao.save(workflow);
     }
 
+    @Override
     public void onGameStopped(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
@@ -59,7 +63,8 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflowDao.delete(workflow.getId());
     }
 
-    public void onQuestionSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    @Override
+    public void onQuestionSubmitted(final String channelId, final String userId, final String question) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -78,10 +83,12 @@ public class WorkflowServiceImpl implements WorkflowService {
             }
         }
 
+        workflow.setQuestion(question);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
         workflowDao.save(workflow);
     }
 
+    @Override
     public void onAnswerSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
@@ -98,6 +105,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
     }
 
+    @Override
     public void onCorrectAnswerSelected(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
@@ -114,6 +122,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
     }
 
+    @Override
     public void onTurnChanged(final String channelId, final String userId, final String newControllingUserId)
             throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null || newControllingUserId == null) {
@@ -129,6 +138,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         }
 
         workflow.setControllingUserId(newControllingUserId);
+        workflow.setQuestion(null);
         workflow.setStage(WorkflowStage.STARTED);
         workflowDao.save(workflow);
     }
