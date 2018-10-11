@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.dto.SlackAttachment;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
@@ -170,6 +171,30 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
         responseDoc.setText("Score updated.");
+        return responseDoc;
+    }
+
+    public SlackResponseDoc getStatus(final SlackRequestDoc requestDoc) {
+        final GameState gameState = workflowService.getCurrentGameState(requestDoc.getChannelId());
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+
+        if (gameState == null || gameState.getControllingUserId() == null) {
+            responseDoc.setText(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
+        } else {
+            final boolean isControllingUser = gameState.getControllingUserId().equals(requestDoc.getUserId());
+            String text = "It's " + (isControllingUser ? "your" : ("<@" + gameState.getControllingUserId() + ">'s")) + " turn and ";
+
+            if (gameState.getQuestion() == null) {
+                text += "no question has been asked yet.";
+            } else {
+                text += (isControllingUser ? "you have" : "he/she has") + " asked the following question:\n\n" + gameState.getQuestion();
+            }
+
+            responseDoc.setText(text);
+        }
+
         return responseDoc;
     }
 

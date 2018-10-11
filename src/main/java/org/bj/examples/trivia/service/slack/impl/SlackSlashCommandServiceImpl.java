@@ -60,6 +60,8 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                         commandParts[1],
                         commandParts.length > 2 ? commandText.substring(commandParts[1].length(), commandText.length()).trim() : null
                 );
+            case "status":
+                return triviaGameService.getStatus(requestDoc);
             case "scores":
                 return triviaGameService.getScores(requestDoc);
             case "reset":

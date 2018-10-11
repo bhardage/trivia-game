@@ -142,4 +142,24 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflow.setStage(WorkflowStage.STARTED);
         workflowDao.save(workflow);
     }
+
+    @Override
+    public GameState getCurrentGameState(final String channelId) {
+        if (channelId == null) {
+            return null;
+        }
+
+        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final GameState gameState;
+
+        if (workflow == null) {
+            gameState = new GameState(null, null);
+        } else if (workflow.getStage() == WorkflowStage.STARTED) {
+            gameState = new GameState(workflow.getControllingUserId(), null);
+        } else {
+            gameState = new GameState(workflow.getControllingUserId(), workflow.getQuestion());
+        }
+
+        return gameState;
+    }
 }

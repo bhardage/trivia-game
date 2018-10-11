@@ -116,4 +116,9 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
         currentHost = new SlackUser(newControllingUserId, null);
         question = null;
     }
+
+    @Override
+    public GameState getCurrentGameState(final String channelId) {
+        return new GameState(currentHost == null ? null : currentHost.getUserId(), question);
+    }
 }
