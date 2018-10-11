@@ -1,8 +1,5 @@
 package org.bj.examples.trivia.dao.workflow;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.bj.examples.trivia.dao.BaseDao;
 import org.bj.examples.trivia.dao.score.ScoreInfo;
 import org.springframework.stereotype.Service;
