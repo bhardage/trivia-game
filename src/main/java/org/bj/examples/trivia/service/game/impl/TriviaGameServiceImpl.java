@@ -29,8 +29,8 @@ import org.springframework.stereotype.Service;
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
 
-    private static final String BASE_STATUS_FORMAT = "Turn: %s\nQuestion:%s";
-    private static final String ANSWERS_FORMAT = "\n\nAnswers:%s";
+    private static final String BASE_STATUS_FORMAT = "*Turn:* %s\n*Question:*%s";
+    private static final String ANSWERS_FORMAT = "\n\n*Answers:*%s";
     private static final String SINGLE_ANSWER_FORMAT = "%22s   %s   %s";
 
     private static final String NO_CORRECT_ANSWER_TARGET = "none";

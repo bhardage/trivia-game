@@ -91,7 +91,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("Turn: Yours\nQuestion: Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:* Waiting...")));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("Turn: <@U6789>\nQuestion: Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Turn:* <@U6789>\n*Question:* Waiting...")));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("Turn: Yours\nQuestion:\n\nsome question?\n\nAnswers: Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("Turn: <@U6789>\nQuestion:\n\nsome question?\n\nAnswers: Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Turn:* <@U6789>\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("Turn: Yours\nQuestion:\n\nsome question?\n\nAnswers:\n\n```10/09/2018 11:30:33 AM   @jimbob                answer 1\n10/09/2018 11:32:21 AM   @joe                   answer 2\n10/09/2018 11:34:25 AM   @muchlongerusername    answer 3```")));
+        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:*\n\n```10/09/2018 11:30:33 AM   @jimbob                answer 1\n10/09/2018 11:32:21 AM   @joe                   answer 2\n10/09/2018 11:34:25 AM   @muchlongerusername    answer 3```")));
     }
     //endregion
 
