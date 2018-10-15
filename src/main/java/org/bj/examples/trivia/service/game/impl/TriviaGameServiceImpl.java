@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
 
-    private static final String BASE_STATUS_FORMAT = "Turn:     %s\nQuestion:%s";
+    private static final String BASE_STATUS_FORMAT = "Turn: %s\nQuestion:%s";
     private static final String ANSWERS_FORMAT = "\n\nAnswers:%s";
     private static final String SINGLE_ANSWER_FORMAT = "%22s   %s   %s";
 
@@ -242,7 +242,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                         .max(Comparator.comparing(Integer::valueOf))
                         .orElse(0);
 
-                answerText = "\n\n" + gameState.getAnswers().stream()
+                answerText = "\n\n```" + gameState.getAnswers().stream()
                         .sorted(Comparator.comparing(GameState.Answer::getCreatedDate))
                         .map(answer ->
                             String.format(
@@ -252,13 +252,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                                     answer.getText()
                             )
                         )
-                        .collect(Collectors.joining("\n"));
+                        .collect(Collectors.joining("\n")) + "```";
             }
 
             statusText += String.format(ANSWERS_FORMAT, answerText);
         }
 
-        return "```" + statusText + "```";
+        return statusText;
     }
 
     private String generateScoreText(final SlackRequestDoc requestDoc) {
