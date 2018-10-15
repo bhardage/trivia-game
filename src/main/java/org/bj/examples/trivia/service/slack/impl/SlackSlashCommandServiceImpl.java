@@ -1,6 +1,7 @@
 package org.bj.examples.trivia.service.slack.impl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
     @Override
     public SlackResponseDoc processSlashCommand(final SlackRequestDoc requestDoc) {
         //First thing, capture the timestamp
-        requestDoc.setRequestTime(LocalDateTime.now());
+        requestDoc.setRequestTime(LocalDateTime.now(ZoneId.of("UTC")));
 
         String commandText = requestDoc.getText() == null ? "" : requestDoc.getText().trim();
         final String[] commandParts = commandText.split("\\s+");

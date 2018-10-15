@@ -36,7 +36,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String NO_CORRECT_ANSWER_TARGET = "none";
     private static final String SCORES_FORMAT = "```Scores:\n\n%s```";
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a").withZone(ZoneId.of("US/Central"));
 
     private final ScoreService scoreService;
     private final WorkflowService workflowService;
@@ -129,7 +129,8 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
         delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
-        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> answers ``" + answer + "``");
+        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> answers:");
+        delayedResponseDoc.setAttachments(Arrays.asList(new SlackAttachment(answer, false)));
         delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
@@ -247,7 +248,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                         .map(answer ->
                             String.format(
                                     SINGLE_ANSWER_FORMAT,
-                                    DATE_FORMATTER.format(answer.getCreatedDate().atZone(ZoneId.of("US/Central"))),
+                                    DATE_FORMATTER.format(answer.getCreatedDate().atZone(ZoneId.of("UTC"))),
                                     String.format("@%-" + maxUsernameLength + "s", answer.getUsername()),
                                     answer.getText()
                             )

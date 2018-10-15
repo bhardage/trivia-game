@@ -167,9 +167,9 @@ public class TriviaGameServiceImplTest {
         final String userId = "U12345";
         final String question = "some question?";
         final List<GameState.Answer> answers = ImmutableList.of(
-                new GameState.Answer("U1111", "jimbob", "answer 1", LocalDateTime.of(2018, 10, 9, 11, 30, 33)),
-                new GameState.Answer("U2222", "joe", "answer 2", LocalDateTime.of(2018, 10, 9, 11, 32, 21)),
-                new GameState.Answer("U3333", "muchlongerusername", "answer 3", LocalDateTime.of(2018, 10, 9, 11, 34, 25))
+                new GameState.Answer("U1111", "jimbob", "answer 1", LocalDateTime.of(2018, 10, 9, 16, 30, 33)),
+                new GameState.Answer("U2222", "joe", "answer 2", LocalDateTime.of(2018, 10, 9, 16, 32, 21)),
+                new GameState.Answer("U3333", "muchlongerusername", "answer 3", LocalDateTime.of(2018, 10, 9, 16, 34, 25))
         );
 
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
