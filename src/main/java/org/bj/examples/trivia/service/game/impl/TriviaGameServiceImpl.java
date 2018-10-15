@@ -1,5 +1,6 @@
 package org.bj.examples.trivia.service.game.impl;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -242,10 +243,11 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                         .orElse(0);
 
                 answerText = "\n\n" + gameState.getAnswers().stream()
+                        .sorted(Comparator.comparing(GameState.Answer::getCreatedDate))
                         .map(answer ->
                             String.format(
                                     SINGLE_ANSWER_FORMAT,
-                                    DATE_FORMATTER.format(answer.getCreatedDate()),
+                                    DATE_FORMATTER.format(answer.getCreatedDate().atZone(ZoneId.of("US/Central"))),
                                     String.format("@%-" + maxUsernameLength + "s", answer.getUsername()),
                                     answer.getText()
                             )
