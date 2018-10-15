@@ -1,5 +1,7 @@
 package org.bj.examples.trivia.dto;
 
+import java.time.LocalDateTime;
+
 public class SlackRequestDoc {
     private String token;
 
@@ -19,6 +21,8 @@ public class SlackRequestDoc {
     private String text;
     private String responseUrl;
     private String triggerId;
+
+    private LocalDateTime requestTime;
 
     public String getToken() {
         return token;
@@ -162,5 +166,13 @@ public class SlackRequestDoc {
 
     public void setTrigger_id(String triggerId) {
         this.triggerId = triggerId;
+    }
+
+    public LocalDateTime getRequestTime() {
+        return requestTime;
+    }
+
+    public void setRequestTime(LocalDateTime requestTime) {
+        this.requestTime = requestTime;
     }
 }

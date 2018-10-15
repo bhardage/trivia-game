@@ -1,5 +1,11 @@
 package org.bj.examples.trivia.service.workflow.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.bj.examples.trivia.dao.workflow.Answer;
 import org.bj.examples.trivia.dao.workflow.Workflow;
 import org.bj.examples.trivia.dao.workflow.WorkflowDao;
 import org.bj.examples.trivia.dao.workflow.WorkflowStage;
@@ -89,7 +95,13 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void onAnswerSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onAnswerSubmitted(
+            final String channelId,
+            final String userId,
+            final String username,
+            final String answerText,
+            final LocalDateTime createdDate
+    ) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -103,6 +115,15 @@ public class WorkflowServiceImpl implements WorkflowService {
         } else if (workflow.getStage() != WorkflowStage.QUESTION_ASKED) {
             throw new WorkflowException("A question has not yet been submitted. Please wait for <@" + workflow.getControllingUserId() + "> to ask a question.");
         }
+
+        final Answer answer = new Answer.Builder()
+                .userId(userId)
+                .username(username)
+                .text(answerText)
+                .createdDate(createdDate)
+                .build();
+        workflow.getAnswers().add(answer);
+        workflowDao.save(workflow);
     }
 
     @Override
@@ -139,6 +160,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         workflow.setControllingUserId(newControllingUserId);
         workflow.setQuestion(null);
+        workflow.setAnswers(new ArrayList<>());
         workflow.setStage(WorkflowStage.STARTED);
         workflowDao.save(workflow);
     }
@@ -153,11 +175,14 @@ public class WorkflowServiceImpl implements WorkflowService {
         final GameState gameState;
 
         if (workflow == null) {
-            gameState = new GameState(null, null);
+            gameState = new GameState(null, null, null);
         } else if (workflow.getStage() == WorkflowStage.STARTED) {
-            gameState = new GameState(workflow.getControllingUserId(), null);
+            gameState = new GameState(workflow.getControllingUserId(), null, null);
         } else {
-            gameState = new GameState(workflow.getControllingUserId(), workflow.getQuestion());
+            final List<GameState.Answer> answers = workflow.getAnswers().stream()
+                    .map(answer -> new GameState.Answer(answer.getUserId(), answer.getUsername(), answer.getText(), answer.getCreatedDate()))
+                    .collect(Collectors.toList());
+            gameState = new GameState(workflow.getControllingUserId(), workflow.getQuestion(), answers);
         }
 
         return gameState;

@@ -1,10 +1,12 @@
 package org.bj.examples.trivia.service.game.impl;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.dto.SlackAttachment;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
@@ -24,10 +26,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TriviaGameServiceImpl implements TriviaGameService {
-    private static final String SCORES_FORMAT = "```Scores:\n\n%s```";
     private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
 
+    private static final String BASE_STATUS_FORMAT = "Turn:     %s\nQuestion:%s";
+    private static final String ANSWERS_FORMAT = "\n\nAnswers:%s";
+    private static final String SINGLE_ANSWER_FORMAT = "%22s   %s   %s";
+
     private static final String NO_CORRECT_ANSWER_TARGET = "none";
+    private static final String SCORES_FORMAT = "```Scores:\n\n%s```";
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
 
     private final ScoreService scoreService;
     private final WorkflowService workflowService;
@@ -102,7 +110,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
     public SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer) {
         try {
-            workflowService.onAnswerSubmitted(requestDoc.getChannelId(), requestDoc.getUserId());
+            workflowService.onAnswerSubmitted(
+                    requestDoc.getChannelId(),
+                    requestDoc.getUserId(),
+                    requestDoc.getUsername(),
+                    answer,
+                    requestDoc.getRequestTime()
+            );
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
@@ -179,21 +193,7 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
-
-        if (gameState == null || gameState.getControllingUserId() == null) {
-            responseDoc.setText(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
-        } else {
-            final boolean isControllingUser = gameState.getControllingUserId().equals(requestDoc.getUserId());
-            String text = "It's " + (isControllingUser ? "your" : ("<@" + gameState.getControllingUserId() + ">'s")) + " turn and ";
-
-            if (gameState.getQuestion() == null) {
-                text += "no question has been asked yet.";
-            } else {
-                text += (isControllingUser ? "you have" : "he/she has") + " asked the following question:\n\n" + gameState.getQuestion();
-            }
-
-            responseDoc.setText(text);
-        }
+        responseDoc.setText(generateStatusText(requestDoc, gameState));
 
         return responseDoc;
     }
@@ -215,6 +215,48 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         responseDoc.setAttachments(Arrays.asList(new SlackAttachment(generateScoreText(requestDoc))));
 
         return responseDoc;
+    }
+
+    private String generateStatusText(final SlackRequestDoc requestDoc, final GameState gameState) {
+        if (gameState == null || gameState.getControllingUserId() == null) {
+            return String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand());
+        }
+
+        final boolean isControllingUser = gameState.getControllingUserId().equals(requestDoc.getUserId());
+
+        final String turn = isControllingUser ? "Yours" : "<@" + gameState.getControllingUserId() + ">";
+        final String question = gameState.getQuestion() == null ? " Waiting..." : ("\n\n" + gameState.getQuestion());
+
+        String statusText = String.format(BASE_STATUS_FORMAT, turn, question);
+
+        if (gameState.getQuestion() != null) {
+            String answerText;
+
+            if (CollectionUtils.isEmpty(gameState.getAnswers())) {
+                answerText = " Waiting...";
+            } else {
+                int maxUsernameLength = 1 + gameState.getAnswers().stream()
+                        .map(GameState.Answer::getUsername)
+                        .map(String::length)
+                        .max(Comparator.comparing(Integer::valueOf))
+                        .orElse(0);
+
+                answerText = "\n\n" + gameState.getAnswers().stream()
+                        .map(answer ->
+                            String.format(
+                                    SINGLE_ANSWER_FORMAT,
+                                    DATE_FORMATTER.format(answer.getCreatedDate()),
+                                    String.format("@%-" + maxUsernameLength + "s", answer.getUsername()),
+                                    answer.getText()
+                            )
+                        )
+                        .collect(Collectors.joining("\n"));
+            }
+
+            statusText += String.format(ANSWERS_FORMAT, answerText);
+        }
+
+        return "```" + statusText + "```";
     }
 
     private String generateScoreText(final SlackRequestDoc requestDoc) {

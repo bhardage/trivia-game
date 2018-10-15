@@ -1,13 +1,19 @@
 package org.bj.examples.trivia.dao.workflow;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bj.examples.trivia.dao.BaseDao;
 import org.bj.examples.trivia.dao.score.ScoreInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.cloud.datastore.Entity;
+import com.google.cloud.datastore.EntityValue;
 import com.google.cloud.datastore.FullEntity;
 import com.google.cloud.datastore.IncompleteKey;
 import com.google.cloud.datastore.Key;
+import com.google.cloud.datastore.ListValue;
 import com.google.cloud.datastore.NullValue;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
@@ -16,8 +22,13 @@ import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 
 @Service
 public class WorkflowDao extends BaseDao {
-    public WorkflowDao() {
+    private final AnswerDao answerDao;
+
+    @Autowired
+    public WorkflowDao(final AnswerDao answerDao) {
         super("Workflow");
+
+        this.answerDao = answerDao;
     }
 
     public Workflow findByChannelId(final String channelId) {
@@ -58,19 +69,31 @@ public class WorkflowDao extends BaseDao {
     }
 
     private FullEntity<IncompleteKey> workflowToEntity(final IncompleteKey key, final Workflow workflow) {
+        final List<EntityValue> answerValues = workflow.getAnswers().stream()
+                .map(answerDao::answerToEntity)
+                .map(EntityValue::of)
+                .collect(Collectors.toList());
+
         return Entity.newBuilder(key)
                 .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
                 .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
                 .set(Workflow.QUESTION_KEY, workflow.getQuestion() == null ? NullValue.of() : StringValue.of(workflow.getQuestion()))
+                .set(Workflow.ANSWERS_KEY, ListValue.of(answerValues))
                 .set(Workflow.STAGE_KEY, workflow.getStage().toString())
                 .build();
     }
 
     private Entity workflowToEntity(final Key key, final Workflow workflow) {
+        final List<EntityValue> answerValues = workflow.getAnswers().stream()
+                .map(answerDao::answerToEntity)
+                .map(EntityValue::of)
+                .collect(Collectors.toList());
+
         return Entity.newBuilder(key)
                 .set(Workflow.CHANNEL_ID_KEY, workflow.getChannelId())
                 .set(Workflow.CONTROLLING_USER_ID_KEY, workflow.getControllingUserId())
                 .set(Workflow.QUESTION_KEY, workflow.getQuestion() == null ? NullValue.of() : StringValue.of(workflow.getQuestion()))
+                .set(Workflow.ANSWERS_KEY, ListValue.of(answerValues))
                 .set(Workflow.STAGE_KEY, workflow.getStage().toString())
                 .build();
     }
@@ -80,11 +103,17 @@ public class WorkflowDao extends BaseDao {
             return null;
         }
 
+        final List<Answer> answers = entity.getList(Workflow.ANSWERS_KEY).stream()
+                .map(value -> (FullEntity<?>)value.get())
+                .map(answerDao::entityToAnswer)
+                .collect(Collectors.toList());
+
         return new Workflow.Builder()
                 .id(entity.getKey().getId())
                 .channelId(entity.getString(Workflow.CHANNEL_ID_KEY))
                 .controllingUserId(entity.getString(Workflow.CONTROLLING_USER_ID_KEY))
                 .question(entity.getString(Workflow.QUESTION_KEY))
+                .answers(answers)
                 .stage(WorkflowStage.valueOf(entity.getString(Workflow.STAGE_KEY)))
                 .build();
     }

@@ -7,6 +7,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 import org.bj.examples.trivia.dto.GameState;
@@ -22,6 +24,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -59,7 +62,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setChannelId(channelId);
         requestDoc.setCommand("/command");
 
-        final GameState gameState = new GameState(null, null);
+        final GameState gameState = new GameState(null, null, null);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -80,7 +83,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(userId, null);
+        final GameState gameState = new GameState(userId, null, null);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -88,7 +91,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("It's your turn and no question has been asked yet.")));
+        assertThat(responseDoc.getText(), is(equalTo("```Turn:     Yours\nQuestion: Waiting...```")));
     }
 
     @Test
@@ -102,7 +105,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(controllingUserId, null);
+        final GameState gameState = new GameState(controllingUserId, null, null);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -110,7 +113,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("It's <@" + controllingUserId + ">'s turn and no question has been asked yet.")));
+        assertThat(responseDoc.getText(), is(equalTo("```Turn:     <@U6789>\nQuestion: Waiting...```")));
     }
 
     @Test
@@ -124,7 +127,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(userId, question);
+        final GameState gameState = new GameState(userId, question, null);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -132,7 +135,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("It's your turn and you have asked the following question:\n\nsome question?")));
+        assertThat(responseDoc.getText(), is(equalTo("```Turn:     Yours\nQuestion:\n\nsome question?\n\nAnswers: Waiting...```")));
     }
 
     @Test
@@ -147,7 +150,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(controllingUserId, question);
+        final GameState gameState = new GameState(controllingUserId, question, null);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -155,7 +158,34 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("It's <@" + controllingUserId + ">'s turn and he/she has asked the following question:\n\nsome question?")));
+        assertThat(responseDoc.getText(), is(equalTo("```Turn:     <@U6789>\nQuestion:\n\nsome question?\n\nAnswers: Waiting...```")));
+    }
+
+    @Test
+    public void testGetStatusWithQuestionAndAnswersInGameState() {
+        final String channelId = "channel";
+        final String userId = "U12345";
+        final String question = "some question?";
+        final List<GameState.Answer> answers = ImmutableList.of(
+                new GameState.Answer("U1111", "jimbob", "answer 1", LocalDateTime.of(2018, 10, 9, 11, 30, 33)),
+                new GameState.Answer("U2222", "joe", "answer 2", LocalDateTime.of(2018, 10, 9, 11, 32, 21)),
+                new GameState.Answer("U3333", "muchlongerusername", "answer 3", LocalDateTime.of(2018, 10, 9, 11, 34, 25))
+        );
+
+        final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setChannelId(channelId);
+        requestDoc.setCommand("/command");
+        requestDoc.setUserId(userId);
+
+        final GameState gameState = new GameState(userId, question, answers);
+
+        given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
+
+        final SlackResponseDoc responseDoc = cut.getStatus(requestDoc);
+
+        assertThat(responseDoc, is(notNullValue()));
+        assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
+        assertThat(responseDoc.getText(), is(equalTo("```Turn:     Yours\nQuestion:\n\nsome question?\n\nAnswers:\n\n10/09/2018 11:30:33 AM   @jimbob                answer 1\n10/09/2018 11:32:21 AM   @joe                   answer 2\n10/09/2018 11:34:25 AM   @muchlongerusername    answer 3```")));
     }
     //endregion
 

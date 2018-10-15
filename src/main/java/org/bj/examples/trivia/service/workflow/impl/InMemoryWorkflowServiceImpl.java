@@ -1,5 +1,7 @@
 package org.bj.examples.trivia.service.workflow.impl;
 
+import java.time.LocalDateTime;
+
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.GameNotStartedException;
@@ -71,7 +73,13 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void onAnswerSubmitted(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
+    public void onAnswerSubmitted(
+            final String channelId,
+            final String userId,
+            final String username,
+            final String answerText,
+            final LocalDateTime createdDate
+    ) throws GameNotStartedException, WorkflowException {
         if (userId == null) {
             return;
         }
@@ -119,6 +127,6 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
 
     @Override
     public GameState getCurrentGameState(final String channelId) {
-        return new GameState(currentHost == null ? null : currentHost.getUserId(), question);
+        return new GameState(currentHost == null ? null : currentHost.getUserId(), question, null);
     }
 }

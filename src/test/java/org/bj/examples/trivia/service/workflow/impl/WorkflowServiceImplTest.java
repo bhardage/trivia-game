@@ -13,6 +13,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.bj.examples.trivia.dao.workflow.Answer;
 import org.bj.examples.trivia.dao.workflow.Workflow;
 import org.bj.examples.trivia.dao.workflow.WorkflowDao;
 import org.bj.examples.trivia.dao.workflow.WorkflowStage;
@@ -461,7 +465,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(null, "12345");
+            cut.onAnswerSubmitted(null, "12345", null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -476,7 +480,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted("12345", null);
+            cut.onAnswerSubmitted("12345", null, null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -496,7 +500,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId, null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -505,6 +509,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
         verify(workflowDao).findByChannelId(channelId);
+        verify(workflowDao, never()).save(any());
     }
 
     @Test
@@ -524,7 +529,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId, null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -534,6 +539,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception.getMessage(), is(equalTo("You can't answer your own question!")));
 
         verify(workflowDao).findByChannelId(channelId);
+        verify(workflowDao, never()).save(any());
     }
 
     @Test
@@ -553,7 +559,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId, null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -563,6 +569,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception.getMessage(), is(equalTo("You can't answer your own question!")));
 
         verify(workflowDao).findByChannelId(channelId);
+        verify(workflowDao, never()).save(any());
     }
 
     @Test
@@ -583,7 +590,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId, null, null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -593,12 +600,16 @@ public class WorkflowServiceImplTest {
         assertThat(exception.getMessage(), is(equalTo("A question has not yet been submitted. Please wait for <@" + controllingUserId + "> to ask a question.")));
 
         verify(workflowDao).findByChannelId(channelId);
+        verify(workflowDao, never()).save(any());
     }
 
     @Test
     public void testOnAnswerSubmittedWithDifferentHostAndQuestionAsked() {
         final String channelId = "C12345";
         final String userId = "U6789";
+        final String username = "myusername";
+        final String answerText = "answer test";
+        final LocalDateTime answerTime = LocalDateTime.now();
         final String controllingUserId = "U1346";
 
         final Workflow workflow = new Workflow.Builder()
@@ -613,7 +624,7 @@ public class WorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onAnswerSubmitted(channelId, userId);
+            cut.onAnswerSubmitted(channelId, userId, username, answerText, answerTime);
         } catch (Exception e) {
             exception = e;
         }
@@ -621,6 +632,23 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(nullValue()));
 
         verify(workflowDao).findByChannelId(channelId);
+
+        ArgumentCaptor<Workflow> workflowCaptor = ArgumentCaptor.forClass(Workflow.class);
+        verify(workflowDao).save(workflowCaptor.capture());
+
+        assertThat(workflowCaptor.getValue(), is(notNullValue()));
+        assertThat(workflowCaptor.getValue().getId(), is(equalTo(1L)));
+        assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
+        assertThat(workflowCaptor.getValue().getControllingUserId(), is(equalTo(controllingUserId)));
+        assertThat(workflowCaptor.getValue().getStage(), is(equalTo(WorkflowStage.QUESTION_ASKED)));
+
+        final List<Answer> answers = workflowCaptor.getValue().getAnswers();
+        assertThat(answers, is(notNullValue()));
+        assertThat(answers.size(), is(equalTo(1)));
+        assertThat(answers.get(0).getUserId(), is(equalTo(userId)));
+        assertThat(answers.get(0).getUsername(), is(equalTo(username)));
+        assertThat(answers.get(0).getText(), is(equalTo(answerText)));
+        assertThat(answers.get(0).getCreatedDate(), is(equalTo(answerTime)));
     }
     //endregion
 
