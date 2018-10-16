@@ -10,7 +10,7 @@ import org.bj.examples.trivia.service.score.ScoreService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("dev")
+@Profile("memory")
 @Service
 public class InMemoryScoreServiceImpl implements ScoreService {
     private Map<SlackUser, Long> scoresByUser = new ConcurrentHashMap<>();

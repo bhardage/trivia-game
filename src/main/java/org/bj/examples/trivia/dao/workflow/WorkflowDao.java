@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.bj.examples.trivia.dao.BaseDao;
 import org.bj.examples.trivia.dao.score.ScoreInfo;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,18 +55,18 @@ public class WorkflowDao extends BaseDao {
         Entity workflowEntity = null;
 
         if (workflow.getId() == null) {
-            final IncompleteKey key = keyFactory.newKey();
+            final IncompleteKey key = keyFactory.newKey(new ObjectId().toHexString());
             workflowEntity = datastore.add(workflowToEntity(key, workflow));
         } else {
-            final Key key = keyFactory.newKey(workflow.getId());
+            final Key key = keyFactory.newKey(workflow.getId().toHexString());
             datastore.update(workflowToEntity(key, workflow));
         }
 
         return entityToWorkflow(workflowEntity);
     }
 
-    public void delete(final Long id) {
-        datastore.delete(keyFactory.newKey(id));
+    public void delete(final String keyName) {
+        datastore.delete(keyFactory.newKey(keyName));
     }
 
     private FullEntity<IncompleteKey> workflowToEntity(final IncompleteKey key, final Workflow workflow) {
@@ -103,18 +104,20 @@ public class WorkflowDao extends BaseDao {
             return null;
         }
 
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId(entity.getKey().getName()));
+        workflow.setChannelId(entity.getString(Workflow.CHANNEL_ID_KEY));
+        workflow.setControllingUserId(entity.getString(Workflow.CONTROLLING_USER_ID_KEY));
+        workflow.setQuestion(entity.getString(Workflow.QUESTION_KEY));
+
         final List<Answer> answers = entity.getList(Workflow.ANSWERS_KEY).stream()
                 .map(value -> (FullEntity<?>)value.get())
                 .map(answerDao::entityToAnswer)
                 .collect(Collectors.toList());
+        workflow.setAnswers(answers);
 
-        return new Workflow.Builder()
-                .id(entity.getKey().getId())
-                .channelId(entity.getString(Workflow.CHANNEL_ID_KEY))
-                .controllingUserId(entity.getString(Workflow.CONTROLLING_USER_ID_KEY))
-                .question(entity.getString(Workflow.QUESTION_KEY))
-                .answers(answers)
-                .stage(WorkflowStage.valueOf(entity.getString(Workflow.STAGE_KEY)))
-                .build();
+        workflow.setStage(WorkflowStage.valueOf(entity.getString(Workflow.STAGE_KEY)));
+
+        return workflow;
     }
 }

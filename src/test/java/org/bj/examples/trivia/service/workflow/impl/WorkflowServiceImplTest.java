@@ -22,6 +22,7 @@ import org.bj.examples.trivia.dao.workflow.WorkflowDao;
 import org.bj.examples.trivia.dao.workflow.WorkflowStage;
 import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
+import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -73,12 +74,11 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -104,12 +104,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -217,12 +216,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -244,15 +242,15 @@ public class WorkflowServiceImplTest {
 
     @Test
     public void testOnGameStoppedWithExistingWorkflowAndSameHost() {
+        final ObjectId id = new ObjectId();
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(id);
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -267,7 +265,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(nullValue()));
 
         verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao).delete(1L);
+        verify(workflowDao).delete(id.toHexString());
     }
     //endregion
 
@@ -332,12 +330,11 @@ public class WorkflowServiceImplTest {
         final String controllingUserId = "U1346";
         final String question = "test question";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -364,12 +361,11 @@ public class WorkflowServiceImplTest {
         final String controllingUserId = "U1346";
         final String question = "test question";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -395,12 +391,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String question = "test question";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -422,16 +417,16 @@ public class WorkflowServiceImplTest {
 
     @Test
     public void testOnQuestionSubmittedWithSameHostAndNoQuestionAsked() {
+        final ObjectId id = new ObjectId();
         final String channelId = "C12345";
         final String userId = "U6789";
         final String question = "test question";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(id);
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -451,7 +446,7 @@ public class WorkflowServiceImplTest {
         verify(workflowDao).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
-        assertThat(workflowCaptor.getValue().getId(), is(equalTo(1L)));
+        assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));
         assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
         assertThat(workflowCaptor.getValue().getControllingUserId(), is(equalTo(userId)));
         assertThat(workflowCaptor.getValue().getQuestion(), is(equalTo(question)));
@@ -517,12 +512,11 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -547,12 +541,11 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -578,12 +571,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -605,6 +597,7 @@ public class WorkflowServiceImplTest {
 
     @Test
     public void testOnAnswerSubmittedWithDifferentHostAndQuestionAsked() {
+        final ObjectId id = new ObjectId();
         final String channelId = "C12345";
         final String userId = "U6789";
         final String username = "myusername";
@@ -612,12 +605,11 @@ public class WorkflowServiceImplTest {
         final LocalDateTime answerTime = LocalDateTime.now();
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(id);
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -637,7 +629,7 @@ public class WorkflowServiceImplTest {
         verify(workflowDao).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
-        assertThat(workflowCaptor.getValue().getId(), is(equalTo(1L)));
+        assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));
         assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
         assertThat(workflowCaptor.getValue().getControllingUserId(), is(equalTo(controllingUserId)));
         assertThat(workflowCaptor.getValue().getStage(), is(equalTo(WorkflowStage.QUESTION_ASKED)));
@@ -710,12 +702,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -740,12 +731,11 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -769,12 +759,11 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.STARTED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.STARTED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -798,12 +787,11 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -897,12 +885,11 @@ public class WorkflowServiceImplTest {
         final String newControllingUserId = "U1532";
         final String controllingUserId = "U1346";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(controllingUserId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(new ObjectId());
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(controllingUserId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -924,16 +911,16 @@ public class WorkflowServiceImplTest {
 
     @Test
     public void testOnTurnChangedWithSameHost() {
+        final ObjectId id = new ObjectId();
         final String channelId = "C12345";
         final String userId = "U6789";
         final String newControllingUserId = "U1532";
 
-        final Workflow workflow = new Workflow.Builder()
-                .id(1L)
-                .channelId(channelId)
-                .controllingUserId(userId)
-                .stage(WorkflowStage.QUESTION_ASKED)
-                .build();
+        final Workflow workflow = new Workflow();
+        workflow.setId(id);
+        workflow.setChannelId(channelId);
+        workflow.setControllingUserId(userId);
+        workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
         given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
 
@@ -953,7 +940,7 @@ public class WorkflowServiceImplTest {
         verify(workflowDao).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
-        assertThat(workflowCaptor.getValue().getId(), is(equalTo(1L)));
+        assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));
         assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
         assertThat(workflowCaptor.getValue().getControllingUserId(), is(equalTo(newControllingUserId)));
         assertThat(workflowCaptor.getValue().getStage(), is(equalTo(WorkflowStage.STARTED)));

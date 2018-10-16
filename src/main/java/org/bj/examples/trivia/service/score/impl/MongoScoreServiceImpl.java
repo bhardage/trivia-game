@@ -5,25 +5,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.bj.examples.trivia.dao.score.ScoreInfo;
-import org.bj.examples.trivia.dao.score.ScoreInfoDao;
+import org.bj.examples.trivia.dao.score.ScoreInfoRepo;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.score.ScoreService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("production")
+@Profile("mongo")
 @Service
-public class ScoreServiceImpl implements ScoreService {
-    private final ScoreInfoDao scoreInfoDao;
+public class MongoScoreServiceImpl implements ScoreService {
+    private final ScoreInfoRepo scoreInfoRepo;
 
-    public ScoreServiceImpl(final ScoreInfoDao scoreInfoDao) {
-        this.scoreInfoDao = scoreInfoDao;
+    public MongoScoreServiceImpl(final ScoreInfoRepo scoreInfoRepo) {
+        this.scoreInfoRepo = scoreInfoRepo;
     }
 
     @Override
     public Map<SlackUser, Long> getAllScoresByUser(final String channelId) {
-        final List<ScoreInfo> scores = scoreInfoDao.findAllByChannelId(channelId);
+        final List<ScoreInfo> scores = scoreInfoRepo.findByChannelId(channelId);
 
         return scores.stream().collect(
                 Collectors.toMap(
@@ -35,7 +35,7 @@ public class ScoreServiceImpl implements ScoreService {
 
     @Override
     public void createUserIfNotExists(final String channelId, final SlackUser user) {
-        ScoreInfo scoreInfo = scoreInfoDao.findByChannelIdAndUserId(channelId, user.getUserId());
+        ScoreInfo scoreInfo = scoreInfoRepo.findByChannelIdAndUserId(channelId, user.getUserId());
 
         if (scoreInfo == null) {
             scoreInfo = new ScoreInfo();
@@ -43,24 +43,24 @@ public class ScoreServiceImpl implements ScoreService {
             scoreInfo.setUserId(user.getUserId());
             scoreInfo.setUsername(user.getUsername());
             scoreInfo.setScore(0L);
-            scoreInfoDao.save(scoreInfo);
+            scoreInfoRepo.save(scoreInfo);
         }
     }
 
     @Override
     public void incrementScore(final String channelId, final String userId) throws ScoreException {
-        final ScoreInfo scoreInfo = scoreInfoDao.findByChannelIdAndUserId(channelId, userId);
+        ScoreInfo scoreInfo = scoreInfoRepo.findByChannelIdAndUserId(channelId, userId);
 
         if (scoreInfo == null) {
             throw new ScoreException();
         }
 
         scoreInfo.setScore(scoreInfo.getScore() + 1);
-        scoreInfoDao.save(scoreInfo);
+        scoreInfoRepo.save(scoreInfo);
     }
 
     @Override
     public void resetScores(final String channelId) {
-        scoreInfoDao.deleteAllByChannelId(channelId);
+        scoreInfoRepo.deleteByChannelId(channelId);
     }
 }

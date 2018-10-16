@@ -10,7 +10,7 @@ import org.bj.examples.trivia.service.workflow.WorkflowService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("dev")
+@Profile("memory")
 @Service
 public class InMemoryWorkflowServiceImpl implements WorkflowService {
     private SlackUser currentHost = null;

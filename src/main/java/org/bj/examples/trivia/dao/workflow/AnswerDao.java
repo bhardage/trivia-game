@@ -34,11 +34,12 @@ public class AnswerDao extends BaseDao {
             return null;
         }
 
-        return new Answer.Builder()
-                .userId(entity.getString(Answer.USER_ID_KEY))
-                .username(entity.getString(Answer.USERNAME_KEY))
-                .text(entity.getString(Answer.TEXT_KEY))
-                .createdDate(entity.getTimestamp(Answer.CREATED_DATE_KEY).toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())
-                .build();
+        final Answer answer = new Answer();
+        answer.setUserId(entity.getString(Answer.USER_ID_KEY));
+        answer.setUsername(entity.getString(Answer.USERNAME_KEY));
+        answer.setText(entity.getString(Answer.TEXT_KEY));
+        answer.setCreatedDate(entity.getTimestamp(Answer.CREATED_DATE_KEY).toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+
+        return answer;
     }
 }

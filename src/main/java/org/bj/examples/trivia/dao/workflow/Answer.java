@@ -13,44 +13,6 @@ public class Answer {
     private String text;
     private LocalDateTime createdDate;
 
-    private Answer(Builder builder) {
-        this.userId = builder.userId;
-        this.username = builder.username;
-        this.text = builder.text;
-        this.createdDate = builder.createdDate;
-    }
-
-    public static class Builder {
-        private String userId;
-        private String username;
-        private String text;
-        private LocalDateTime createdDate;
-
-        public Builder userId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder username(String username) {
-            this.username = username;
-            return this;
-        }
-
-        public Builder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Builder createdDate(LocalDateTime createdDate) {
-            this.createdDate = createdDate;
-            return this;
-        }
-
-        public Answer build() {
-            return new Answer(this);
-        }
-    }
-
     public String getUserId() {
         return userId;
     }

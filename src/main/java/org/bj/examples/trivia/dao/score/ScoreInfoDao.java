@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.bj.examples.trivia.dao.BaseDao;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import com.google.cloud.datastore.Entity;
@@ -60,10 +61,10 @@ public class ScoreInfoDao extends BaseDao {
         Entity scoreInfoEntity = null;
 
         if (scoreInfo.getId() == null) {
-            final IncompleteKey key = keyFactory.newKey();
+            final IncompleteKey key = keyFactory.newKey(new ObjectId().toHexString());
             scoreInfoEntity = datastore.add(scoreInfoToEntity(key, scoreInfo));
         } else {
-            final Key key = keyFactory.newKey(scoreInfo.getId());
+            final Key key = keyFactory.newKey(scoreInfo.getId().toHexString());
             datastore.update(scoreInfoToEntity(key, scoreInfo));
         }
 
@@ -106,12 +107,13 @@ public class ScoreInfoDao extends BaseDao {
             return null;
         }
 
-        return new ScoreInfo.Builder()
-                .id(entity.getKey().getId())
-                .channelId(entity.getString(ScoreInfo.CHANNEL_ID_KEY))
-                .userId(entity.getString(ScoreInfo.USER_ID_KEY))
-                .username(entity.getString(ScoreInfo.USERNAME_KEY))
-                .score(entity.getLong(ScoreInfo.SCORE_KEY))
-                .build();
+        final ScoreInfo scoreInfo = new ScoreInfo();
+        scoreInfo.setId(new ObjectId(entity.getKey().getName()));
+        scoreInfo.setChannelId(entity.getString(ScoreInfo.CHANNEL_ID_KEY));
+        scoreInfo.setUserId(entity.getString(ScoreInfo.USER_ID_KEY));
+        scoreInfo.setUsername(entity.getString(ScoreInfo.USERNAME_KEY));
+        scoreInfo.setScore(entity.getLong(ScoreInfo.SCORE_KEY));
+
+        return scoreInfo;
     }
 }

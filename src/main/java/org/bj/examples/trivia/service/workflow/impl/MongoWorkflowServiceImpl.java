@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.bj.examples.trivia.dao.workflow.Answer;
 import org.bj.examples.trivia.dao.workflow.Workflow;
-import org.bj.examples.trivia.dao.workflow.WorkflowDao;
+import org.bj.examples.trivia.dao.workflow.WorkflowRepo;
 import org.bj.examples.trivia.dao.workflow.WorkflowStage;
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.exception.GameNotStartedException;
@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("production")
+@Profile("mongo")
 @Service
-public class WorkflowServiceImpl implements WorkflowService {
-    private final WorkflowDao workflowDao;
+public class MongoWorkflowServiceImpl implements WorkflowService {
+    private final WorkflowRepo workflowRepo;
 
     @Autowired
-    public WorkflowServiceImpl(final WorkflowDao workflowDao) {
-        this.workflowDao = workflowDao;
+    public MongoWorkflowServiceImpl(final WorkflowRepo workflowRepo) {
+        this.workflowRepo = workflowRepo;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        Workflow workflow = workflowDao.findByChannelId(channelId);
+        Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow != null) {
             final String message = userId.equals(workflow.getControllingUserId()) ?
@@ -48,7 +48,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflow.setControllingUserId(userId);
         workflow.setQuestion(null);
         workflow.setStage(WorkflowStage.STARTED);
-        workflowDao.save(workflow);
+        workflowRepo.save(workflow);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow == null) {
             throw new GameNotStartedException();
@@ -65,7 +65,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             throw new WorkflowException("<@" + workflow.getControllingUserId() + "> is currently hosting.");
         }
 
-        workflowDao.delete(workflow.getId().toHexString());
+        workflowRepo.deleteById(workflow.getId());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow == null) {
             throw new GameNotStartedException();
@@ -90,7 +90,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 
         workflow.setQuestion(question);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
-        workflowDao.save(workflow);
+        workflowRepo.save(workflow);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow == null) {
             throw new GameNotStartedException();
@@ -121,7 +121,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         answer.setText(answerText);
         answer.setCreatedDate(createdDate);
         workflow.getAnswers().add(answer);
-        workflowDao.save(workflow);
+        workflowRepo.save(workflow);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow == null) {
             throw new GameNotStartedException();
@@ -148,7 +148,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return;
         }
 
-        Workflow workflow = workflowDao.findByChannelId(channelId);
+        Workflow workflow = workflowRepo.findByChannelId(channelId);
 
         if (workflow == null) {
             throw new GameNotStartedException();
@@ -160,7 +160,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflow.setQuestion(null);
         workflow.setAnswers(new ArrayList<>());
         workflow.setStage(WorkflowStage.STARTED);
-        workflowDao.save(workflow);
+        workflowRepo.save(workflow);
     }
 
     @Override
@@ -169,7 +169,7 @@ public class WorkflowServiceImpl implements WorkflowService {
             return null;
         }
 
-        final Workflow workflow = workflowDao.findByChannelId(channelId);
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
         final GameState gameState;
 
         if (workflow == null) {
