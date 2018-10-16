@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service.impl;
+package org.bj.examples.trivia.service.slack.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 import org.bj.examples.trivia.dto.SlackResponseType;
-import org.bj.examples.trivia.service.TriviaGameService;
+import org.bj.examples.trivia.service.game.TriviaGameService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -62,13 +62,14 @@ public class SlackSlashCommandServiceImplTest {
     @Test
     public void testQuestionCommandWithTooFewArguments() {
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setCommand("/command");
         requestDoc.setText("question");
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getResponseType(), is(SlackResponseType.EPHEMERAL));
-        assertThat(result.getText(), is("To submit a question, use `/moviegame question <QUESTION_TEXT>`.\n\nFor example, `/moviegame question In what year did WWII officially begin?`"));
+        assertThat(result.getText(), is("To submit a question, use `/command question <QUESTION_TEXT>`.\n\nFor example, `/command question In what year did WWII officially begin?`"));
         assertThat(result.getAttachments(), is(nullValue()));
 
         verify(triviaGameService, never()).submitQuestion(any(), any());
@@ -93,13 +94,14 @@ public class SlackSlashCommandServiceImplTest {
     @Test
     public void testAnswerCommandWithTooFewArguments() {
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setCommand("/command");
         requestDoc.setText("answer");
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getResponseType(), is(SlackResponseType.EPHEMERAL));
-        assertThat(result.getText(), is("To submit an answer, use `/moviegame answer <ANSWER_TEXT>`.\n\nFor example, `/moviegame answer Blue skies`"));
+        assertThat(result.getText(), is("To submit an answer, use `/command answer <ANSWER_TEXT>`.\n\nFor example, `/command answer Blue skies`"));
         assertThat(result.getAttachments(), is(nullValue()));
 
         verify(triviaGameService, never()).submitAnswer(any(), any());
@@ -124,15 +126,16 @@ public class SlackSlashCommandServiceImplTest {
     @Test
     public void testMarkCorrectCommandWithTooFewArguments() {
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setCommand("/command");
         requestDoc.setText("correct");
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getResponseType(), is(SlackResponseType.EPHEMERAL));
-        assertThat(result.getText(), is("To mark an answer correct, use `/moviegame correct <USERNAME>`.\n"
-                + "Optional: To include the correct answer, use `/moviegame correct <USERNAME> <CORRECT_ANSWER>`.\n\n"
-                + "For example, `/moviegame correct @jsmith Chris Farley`"));
+        assertThat(result.getText(), is("To mark an answer correct, use `/command correct <USERNAME>`.\n"
+                + "Optional: To include the correct answer, use `/command correct <USERNAME> <CORRECT_ANSWER>`.\n\n"
+                + "For example, `/command correct @jsmith Chris Farley`"));
         assertThat(result.getAttachments(), is(nullValue()));
 
         verify(triviaGameService, never()).markAnswerCorrect(any(), any(), any());

@@ -1,0 +1,8 @@
+indexes:
+
+- kind: ScoreInfo
+  ancestor: no
+  properties:
+  - name: channelId
+  - name: score
+    direction: desc

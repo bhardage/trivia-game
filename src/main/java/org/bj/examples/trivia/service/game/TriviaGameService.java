@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.service;
+package org.bj.examples.trivia.service.game;
 
 import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
@@ -15,6 +15,8 @@ public interface TriviaGameService {
     SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question);
     SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer);
     SlackResponseDoc markAnswerCorrect(final SlackRequestDoc requestDoc, final String target, final String answer);
+
+    SlackResponseDoc getStatus(final SlackRequestDoc requestDoc);
 
     SlackResponseDoc getScores(final SlackRequestDoc requestDoc);
     SlackResponseDoc resetScores(final SlackRequestDoc requestDoc);

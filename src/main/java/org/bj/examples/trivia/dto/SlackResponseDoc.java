@@ -14,7 +14,12 @@ public class SlackResponseDoc {
     private String text;
     private List<SlackAttachment> attachments;
 
-    public static SlackResponseDoc EMPTY = new SlackResponseDoc();
+    public static SlackResponseDoc failure(final String text) {
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.responseType = SlackResponseType.EPHEMERAL;
+        responseDoc.text = text;
+        return responseDoc;
+    }
 
     public SlackResponseType getResponseType() {
         return responseType;
