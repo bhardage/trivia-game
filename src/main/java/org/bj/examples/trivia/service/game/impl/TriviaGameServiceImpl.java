@@ -150,8 +150,13 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                 //"Change" back to the original host to reset the workflow state
                 workflowService.onTurnChanged(requestDoc.getChannelId(), requestDoc.getUserId(), requestDoc.getUserId());
 
-                text = "It looks like no one was able to answer that one!\n\n";
-                text += generateScoreText(requestDoc);
+                text = "It looks like no one was able to answer that one!";
+
+                if (answer != null) {
+                    text += " The correct answer was \"" + answer + "\".";
+                }
+
+                text += "\n\n" + generateScoreText(requestDoc);
                 text += "\n\nOK, <@" + requestDoc.getUserId() + ">, let's try another one!";
             } else {
                 final String userId = SlackUtils.normalizeId(target);
