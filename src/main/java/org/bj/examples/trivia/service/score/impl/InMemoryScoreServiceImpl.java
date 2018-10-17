@@ -21,14 +21,14 @@ public class InMemoryScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public void createUserIfNotExists(final String channelId, final SlackUser user) {
-        if (user == null) {
-            return;
+    public boolean createUserIfNotExists(final String channelId, final SlackUser user) {
+        if (user != null && !scoresByUser.containsKey(user)) {
+            scoresByUser.put(user, 0L);
+
+            return true;
         }
 
-        if (!scoresByUser.containsKey(user)) {
-            scoresByUser.put(user, 0L);
-        }
+        return false;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public void createUserIfNotExists(final String channelId, final SlackUser user) {
+    public boolean createUserIfNotExists(final String channelId, final SlackUser user) {
         ScoreInfo scoreInfo = scoreInfoDao.findByChannelIdAndUserId(channelId, user.getUserId());
 
         if (scoreInfo == null) {
@@ -44,7 +44,11 @@ public class ScoreServiceImpl implements ScoreService {
             scoreInfo.setUsername(user.getUsername());
             scoreInfo.setScore(0L);
             scoreInfoDao.save(scoreInfo);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override

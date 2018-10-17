@@ -34,7 +34,7 @@ public class MongoScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public void createUserIfNotExists(final String channelId, final SlackUser user) {
+    public boolean createUserIfNotExists(final String channelId, final SlackUser user) {
         ScoreInfo scoreInfo = scoreInfoRepo.findByChannelIdAndUserId(channelId, user.getUserId());
 
         if (scoreInfo == null) {
@@ -44,7 +44,11 @@ public class MongoScoreServiceImpl implements ScoreService {
             scoreInfo.setUsername(user.getUsername());
             scoreInfo.setScore(0L);
             scoreInfoRepo.save(scoreInfo);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override

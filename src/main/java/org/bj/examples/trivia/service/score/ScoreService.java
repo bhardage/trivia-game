@@ -7,7 +7,7 @@ import org.bj.examples.trivia.exception.ScoreException;
 
 public interface ScoreService {
     Map<SlackUser, Long> getAllScoresByUser(final String channelId);
-    void createUserIfNotExists(final String channelId, final SlackUser user);
+    boolean createUserIfNotExists(final String channelId, final SlackUser user);
     void incrementScore(final String channelId, final String userId) throws ScoreException;
     void resetScores(final String channelId);
 }
