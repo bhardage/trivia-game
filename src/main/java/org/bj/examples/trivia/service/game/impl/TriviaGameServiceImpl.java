@@ -281,7 +281,12 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                     .max(Comparator.comparing(Integer::valueOf))
                     .orElse(0);
             scoreText = scoresByUser.entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey(Comparator.comparing(SlackUser::getUsername)))
+                    //order by score desc, username
+                    .sorted(
+                            Map.Entry.<SlackUser, Long>comparingByValue()
+                                    .reversed()
+                                    .thenComparing(Map.Entry.<SlackUser, Long>comparingByKey(Comparator.comparing(SlackUser::getUsername)))
+                    )
                     .map(entry -> String.format("@%-" + maxUsernameLength + "s %3d", entry.getKey().getUsername() + ":", entry.getValue()))
                     .collect(Collectors.joining("\n"));
         }
