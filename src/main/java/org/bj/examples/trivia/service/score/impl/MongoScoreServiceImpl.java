@@ -52,6 +52,12 @@ public class MongoScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public boolean doesUserExist(final String channelId, final String userId) {
+        final ScoreInfo scoreInfo = scoreInfoRepo.findByChannelIdAndUserId(channelId, userId);
+        return scoreInfo != null;
+    }
+
+    @Override
     public void incrementScore(final String channelId, final String userId) throws ScoreException {
         ScoreInfo scoreInfo = scoreInfoRepo.findByChannelIdAndUserId(channelId, userId);
 

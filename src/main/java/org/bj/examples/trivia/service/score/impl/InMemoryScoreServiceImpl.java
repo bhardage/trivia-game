@@ -32,6 +32,11 @@ public class InMemoryScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public boolean doesUserExist(final String channelId, final String userId) {
+        return userId != null && scoresByUser.containsKey(new SlackUser(userId, null));
+    }
+
+    @Override
     public void incrementScore(final String channelId, final String userId) throws ScoreException {
         final SlackUser key = new SlackUser(userId, null);
 

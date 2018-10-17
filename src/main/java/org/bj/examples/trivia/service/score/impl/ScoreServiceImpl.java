@@ -52,6 +52,12 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
+    public boolean doesUserExist(final String channelId, final String userId) {
+        final ScoreInfo scoreInfo = scoreInfoDao.findByChannelIdAndUserId(channelId, userId);
+        return scoreInfo != null;
+    }
+
+    @Override
     public void incrementScore(final String channelId, final String userId) throws ScoreException {
         final ScoreInfo scoreInfo = scoreInfoDao.findByChannelIdAndUserId(channelId, userId);
 
