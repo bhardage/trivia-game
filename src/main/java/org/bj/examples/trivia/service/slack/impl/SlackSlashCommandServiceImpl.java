@@ -13,6 +13,7 @@ import org.bj.examples.trivia.service.game.TriviaGameService;
 import org.bj.examples.trivia.service.slack.SlackSlashCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
@@ -40,9 +41,17 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
 
         switch (operator) {
             case "start":
-                return triviaGameService.start(requestDoc);
+                return triviaGameService.start(requestDoc, StringUtils.isEmpty(commandText) ? null : commandText);
             case "stop":
                 return triviaGameService.stop(requestDoc);
+            case "join":
+                return triviaGameService.join(requestDoc);
+            case "pass":
+                if (commandParts.length < 2) {
+                    return getPassFormat(requestDoc.getCommand());
+                }
+
+                return triviaGameService.pass(requestDoc, commandText);
             case "question":
                 if (commandParts.length < 2) {
                     return getSubmitQuestionFormat(requestDoc.getCommand());
@@ -74,6 +83,14 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
         }
 
         return getUsageFormat(requestDoc.getCommand());
+    }
+
+    private SlackResponseDoc getPassFormat(final String command) {
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("To pass your turn, use `" + command + " pass <USERNAME>`.\n\nFor example, `" + command + " pass @jsmith`");
+
+        return responseDoc;
     }
 
     private SlackResponseDoc getSubmitQuestionFormat(final String command) {
@@ -110,12 +127,18 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
 
         final List<SlackAttachment> attachments = Arrays.asList(
                 new SlackAttachment("To start a new game as the host, use `" + command + " start`"),
+                new SlackAttachment("To join a game, use `" + command + " join`"),
                 new SlackAttachment("To ask a question, use `" + command + " question <QUESTION>`. This requires you to be the host."),
-                new SlackAttachment("To answer a question, use `" + command + " answer <ANSWER>`."),
-                new SlackAttachment("To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`. This requires you to be the host."),
-                new SlackAttachment("To view the current socres, use `" + command + " scores`."),
+                new SlackAttachment("To answer a question, use `" + command + " answer <ANSWER>`. (Note that answering a question will automatically join the game.)"),
+                new SlackAttachment(
+                        "To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`." +
+                                " If no correct answers were given, use `" + command + " correct none <CORRECT_ANSWER>`. This requires you to be the host."
+                ),
+                new SlackAttachment("To pass your turn to someone else, use `" + command + " pass <USERNAME>`"),
+                new SlackAttachment("To view whose turn it is, the current question, and all answers provided so far, use `" + command + " status`"),
+                new SlackAttachment("To view the current scores, use `" + command + " scores`."),
                 new SlackAttachment("To reset all scores, use `" + command + " reset`."),
-                new SlackAttachment("To stop the current game, use `" + command + " stop`")
+                new SlackAttachment("To stop the current game, use `" + command + " stop`. This requires you to be the host.")
         );
         responseDoc.setAttachments(attachments);
 

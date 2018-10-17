@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
 
-    private static final String BASE_STATUS_FORMAT = "*Turn:* %s\n*Question:*%s";
+    private static final String BASE_STATUS_FORMAT = "*Topic:* %s\n*Turn:* %s\n*Question:*%s";
     private static final String ANSWERS_FORMAT = "\n\n*Answers:*%s";
     private static final String SINGLE_ANSWER_FORMAT = "%22s   %s   %s";
 
@@ -53,12 +53,12 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         this.delayedSlackService = delayedSlackService;
     }
 
-    public SlackResponseDoc start(final SlackRequestDoc requestDoc) {
+    public SlackResponseDoc start(final SlackRequestDoc requestDoc, final String topic) {
         final String channelId = requestDoc.getChannelId();
         final String userId = requestDoc.getUserId();
 
         try {
-            workflowService.onGameStarted(channelId, userId);
+            workflowService.onGameStarted(channelId, userId, topic);
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
@@ -85,6 +85,57 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         responseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
         responseDoc.setText("The game has been stopped but scores have not been cleared. If you'd like to start a new game, try `" + requestDoc.getCommand() + " start`.");
 
+        return responseDoc;
+    }
+
+    public SlackResponseDoc join(final SlackRequestDoc requestDoc) {
+        final SlackUser user = new SlackUser(requestDoc.getUserId(), requestDoc.getUsername());
+        final boolean userCreated = scoreService.createUserIfNotExists(requestDoc.getChannelId(), user);
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+
+        if (userCreated) {
+            responseDoc.setText("Joining game.");
+
+            final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+            delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+            delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> has joined the game!");
+            delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+        } else {
+            responseDoc.setText("You're already in the game.");
+        }
+
+        return responseDoc;
+    }
+
+    public SlackResponseDoc pass(final SlackRequestDoc requestDoc, final String target) {
+        final String userId = SlackUtils.normalizeId(target);
+
+        try {
+            final boolean userExists = scoreService.doesUserExist(requestDoc.getChannelId(), userId);
+
+            if (!userExists) {
+                final SlackResponseDoc responseDoc = SlackResponseDoc.failure("User " + target + " does not exist. Please choose a valid user.");
+                responseDoc.setAttachments(Arrays.asList(new SlackAttachment("Usage: `" + requestDoc.getCommand() + " pass @jsmith`")));
+                return responseDoc;
+            }
+
+            workflowService.onTurnChanged(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
+        } catch (WorkflowException e) {
+            return SlackResponseDoc.failure(e.getMessage());
+        }
+
+        final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+        delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> has decided to pass his/her turn to <@" + userId + ">.\n\nOK, <@" + userId + ">, it's your turn to ask a question!");
+        delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("Turn passed to <@" + userId + ">.");
         return responseDoc;
     }
 
@@ -231,10 +282,11 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final boolean isControllingUser = gameState.getControllingUserId().equals(requestDoc.getUserId());
 
+        final String topic = gameState.getTopic() == null ? "None" : gameState.getTopic();
         final String turn = isControllingUser ? "Yours" : "<@" + gameState.getControllingUserId() + ">";
         final String question = gameState.getQuestion() == null ? " Waiting..." : ("\n\n" + gameState.getQuestion());
 
-        String statusText = String.format(BASE_STATUS_FORMAT, turn, question);
+        String statusText = String.format(BASE_STATUS_FORMAT, topic, turn, question);
 
         if (gameState.getQuestion() != null) {
             String answerText;
@@ -281,7 +333,12 @@ public class TriviaGameServiceImpl implements TriviaGameService {
                     .max(Comparator.comparing(Integer::valueOf))
                     .orElse(0);
             scoreText = scoresByUser.entrySet().stream()
-                    .sorted(Map.Entry.comparingByKey(Comparator.comparing(SlackUser::getUsername)))
+                    //order by score desc, username
+                    .sorted(
+                            Map.Entry.<SlackUser, Long>comparingByValue()
+                                    .reversed()
+                                    .thenComparing(Map.Entry.<SlackUser, Long>comparingByKey(Comparator.comparing(SlackUser::getUsername)))
+                    )
                     .map(entry -> String.format("@%-" + maxUsernameLength + "s %3d", entry.getKey().getUsername() + ":", entry.getValue()))
                     .collect(Collectors.joining("\n"));
         }

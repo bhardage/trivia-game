@@ -10,14 +10,14 @@ import org.bj.examples.trivia.service.workflow.WorkflowService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("dev")
+@Profile("memory")
 @Service
 public class InMemoryWorkflowServiceImpl implements WorkflowService {
     private SlackUser currentHost = null;
     private String question = null;
 
     @Override
-    public void onGameStarted(final String channelId, final String userId) throws WorkflowException {
+    public void onGameStarted(final String channelId, final String userId, final String topic) throws WorkflowException {
         if (userId == null) {
             return;
         }
@@ -127,6 +127,10 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
 
     @Override
     public GameState getCurrentGameState(final String channelId) {
-        return new GameState(currentHost == null ? null : currentHost.getUserId(), question, null);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(currentHost == null ? null : currentHost.getUserId());
+        gameState.setQuestion(question);
+
+        return gameState;
     }
 }

@@ -62,7 +62,7 @@ public class TriviaGameServiceImplTest {
         requestDoc.setChannelId(channelId);
         requestDoc.setCommand("/command");
 
-        final GameState gameState = new GameState(null, null, null);
+        final GameState gameState = new GameState();
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -74,7 +74,7 @@ public class TriviaGameServiceImplTest {
     }
 
     @Test
-    public void testGetStatusWithSameHostAndNoQuestionInGameState() {
+    public void testGetStatusWithNoTopicInGameState() {
         final String channelId = "channel";
         final String userId = "U12345";
 
@@ -83,7 +83,8 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(userId, null, null);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(userId);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -91,7 +92,31 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:* Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* None\n*Turn:* Yours\n*Question:* Waiting...")));
+    }
+
+    @Test
+    public void testGetStatusWithSameHostAndNoQuestionInGameState() {
+        final String channelId = "channel";
+        final String userId = "U12345";
+        final String topic = "some topic";
+
+        final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setChannelId(channelId);
+        requestDoc.setCommand("/command");
+        requestDoc.setUserId(userId);
+
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(userId);
+        gameState.setTopic(topic);
+
+        given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
+
+        final SlackResponseDoc responseDoc = cut.getStatus(requestDoc);
+
+        assertThat(responseDoc, is(notNullValue()));
+        assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* some topic\n*Turn:* Yours\n*Question:* Waiting...")));
     }
 
     @Test
@@ -99,13 +124,16 @@ public class TriviaGameServiceImplTest {
         final String channelId = "channel";
         final String userId = "U12345";
         final String controllingUserId = "U6789";
+        final String topic = "some topic";
 
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
         requestDoc.setChannelId(channelId);
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(controllingUserId, null, null);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(controllingUserId);
+        gameState.setTopic(topic);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -113,13 +141,14 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("*Turn:* <@U6789>\n*Question:* Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* some topic\n*Turn:* <@U6789>\n*Question:* Waiting...")));
     }
 
     @Test
     public void testGetStatusWithSameHostAndQuestionInGameState() {
         final String channelId = "channel";
         final String userId = "U12345";
+        final String topic = "some topic";
         final String question = "some question?";
 
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
@@ -127,7 +156,10 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(userId, question, null);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(userId);
+        gameState.setTopic(topic);
+        gameState.setQuestion(question);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -135,7 +167,7 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* some topic\n*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
     }
 
     @Test
@@ -143,6 +175,7 @@ public class TriviaGameServiceImplTest {
         final String channelId = "channel";
         final String userId = "U12345";
         final String controllingUserId = "U6789";
+        final String topic = "some topic";
         final String question = "some question?";
 
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
@@ -150,7 +183,10 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(controllingUserId, question, null);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(controllingUserId);
+        gameState.setTopic(topic);
+        gameState.setQuestion(question);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -158,13 +194,14 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("*Turn:* <@U6789>\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* some topic\n*Turn:* <@U6789>\n*Question:*\n\nsome question?\n\n*Answers:* Waiting...")));
     }
 
     @Test
     public void testGetStatusWithQuestionAndAnswersInGameState() {
         final String channelId = "channel";
         final String userId = "U12345";
+        final String topic = "some topic";
         final String question = "some question?";
         final List<GameState.Answer> answers = ImmutableList.of(
                 new GameState.Answer("U1111", "jimbob", "answer 1", LocalDateTime.of(2018, 10, 9, 16, 30, 33)),
@@ -177,7 +214,11 @@ public class TriviaGameServiceImplTest {
         requestDoc.setCommand("/command");
         requestDoc.setUserId(userId);
 
-        final GameState gameState = new GameState(userId, question, answers);
+        final GameState gameState = new GameState();
+        gameState.setControllingUserId(userId);
+        gameState.setTopic(topic);
+        gameState.setQuestion(question);
+        gameState.setAnswers(answers);
 
         given(workflowService.getCurrentGameState(anyString())).willReturn(gameState);
 
@@ -185,16 +226,17 @@ public class TriviaGameServiceImplTest {
 
         assertThat(responseDoc, is(notNullValue()));
         assertThat(responseDoc.getResponseType(), is(equalTo(SlackResponseType.EPHEMERAL)));
-        assertThat(responseDoc.getText(), is(equalTo("*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:*\n\n```10/09/2018 11:30:33 AM   @jimbob                answer 1\n10/09/2018 11:32:21 AM   @joe                   answer 2\n10/09/2018 11:34:25 AM   @muchlongerusername    answer 3```")));
+        assertThat(responseDoc.getText(), is(equalTo("*Topic:* some topic\n*Turn:* Yours\n*Question:*\n\nsome question?\n\n*Answers:*\n\n```10/09/2018 11:30:33 AM   @jimbob                answer 1\n10/09/2018 11:32:21 AM   @joe                   answer 2\n10/09/2018 11:34:25 AM   @muchlongerusername    answer 3```")));
     }
     //endregion
 
     @Test
     public void testGetScoresFormatsAndSortsCorrectly() {
         final Map<SlackUser, Long> scoresByUser = ImmutableMap.of(
-                new SlackUser("1234", "test1"), 1L,
+                new SlackUser("1234", "test4"), 1L,
                 new SlackUser("1235", "longertest2"), 103L,
-                new SlackUser("1236", "unmanageablylongertest3"), 12L
+                new SlackUser("1236", "unmanageablylongertest3"), 12L,
+                new SlackUser("1237", "test1"), 1L
         );
         final String channelId = "channel";
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
@@ -208,10 +250,11 @@ public class TriviaGameServiceImplTest {
          * ```Scores:
          *
          * @longertest2:             103
+         * @unmanageablylongertest3:  12
          * @test1:                     1
-         * @unmanageablylongertest3:  12```
+         * @test4:                     1```
          */
-        assertThat(responseDoc.getText(), is("```Scores:\n\n@longertest2:             103\n@test1:                     1\n@unmanageablylongertest3:  12```"));
+        assertThat(responseDoc.getText(), is("```Scores:\n\n@longertest2:             103\n@unmanageablylongertest3:  12\n@test1:                     1\n@test4:                     1```"));
     }
 
     @Test

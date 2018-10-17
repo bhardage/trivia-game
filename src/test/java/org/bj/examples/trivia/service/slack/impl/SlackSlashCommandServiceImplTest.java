@@ -28,19 +28,35 @@ public class SlackSlashCommandServiceImplTest {
     private TriviaGameService triviaGameService;
 
     @Test
-    public void testStartCommand() {
+    public void testStartCommandWithNoTopic() {
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
         requestDoc.setText("  start  ");
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
-        given(triviaGameService.start(any(SlackRequestDoc.class))).willReturn(responseDoc);
+        given(triviaGameService.start(any(), any())).willReturn(responseDoc);
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
         assertThat(result, is(responseDoc));
 
-        verify(triviaGameService).start(requestDoc);
+        verify(triviaGameService).start(requestDoc, null);
+    }
+
+    @Test
+    public void testStartCommandWithTopic() {
+        final SlackRequestDoc requestDoc = new SlackRequestDoc();
+        requestDoc.setText("  start  movie quotes");
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+
+        given(triviaGameService.start(any(), any())).willReturn(responseDoc);
+
+        final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
+
+        assertThat(result, is(responseDoc));
+
+        verify(triviaGameService).start(requestDoc, "movie quotes");
     }
 
     @Test
@@ -50,7 +66,7 @@ public class SlackSlashCommandServiceImplTest {
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
-        given(triviaGameService.stop(any(SlackRequestDoc.class))).willReturn(responseDoc);
+        given(triviaGameService.stop(any())).willReturn(responseDoc);
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
@@ -180,7 +196,7 @@ public class SlackSlashCommandServiceImplTest {
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
-        given(triviaGameService.getScores(any(SlackRequestDoc.class))).willReturn(responseDoc);
+        given(triviaGameService.getScores(any())).willReturn(responseDoc);
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 
@@ -196,7 +212,7 @@ public class SlackSlashCommandServiceImplTest {
 
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
 
-        given(triviaGameService.resetScores(any(SlackRequestDoc.class))).willReturn(responseDoc);
+        given(triviaGameService.resetScores(any())).willReturn(responseDoc);
 
         final SlackResponseDoc result = cut.processSlashCommand(requestDoc);
 

@@ -4,26 +4,41 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public final class GameState {
-    private final String controllingUserId;
-    private final String question;
-    private final List<Answer> answers;
-
-    public GameState(final String controllingUserId, final String question, final List<Answer> answers) {
-        this.controllingUserId = controllingUserId;
-        this.question = question;
-        this.answers = answers;
-    }
+    private String controllingUserId;
+    private String topic;
+    private String question;
+    private List<Answer> answers;
 
     public String getControllingUserId() {
         return controllingUserId;
+    }
+
+    public void setControllingUserId(String controllingUserId) {
+        this.controllingUserId = controllingUserId;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public String getQuestion() {
         return question;
     }
 
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
     public List<Answer> getAnswers() {
         return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public static final class Answer {

@@ -10,7 +10,7 @@ import org.bj.examples.trivia.service.score.ScoreService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("dev")
+@Profile("memory")
 @Service
 public class InMemoryScoreServiceImpl implements ScoreService {
     private Map<SlackUser, Long> scoresByUser = new ConcurrentHashMap<>();
@@ -21,14 +21,19 @@ public class InMemoryScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public void createUserIfNotExists(final String channelId, final SlackUser user) {
-        if (user == null) {
-            return;
+    public boolean createUserIfNotExists(final String channelId, final SlackUser user) {
+        if (user != null && !scoresByUser.containsKey(user)) {
+            scoresByUser.put(user, 0L);
+
+            return true;
         }
 
-        if (!scoresByUser.containsKey(user)) {
-            scoresByUser.put(user, 0L);
-        }
+        return false;
+    }
+
+    @Override
+    public boolean doesUserExist(final String channelId, final String userId) {
+        return userId != null && scoresByUser.containsKey(new SlackUser(userId, null));
     }
 
     @Override

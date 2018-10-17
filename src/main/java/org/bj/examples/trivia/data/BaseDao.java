@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.dao;
+package org.bj.examples.trivia.data;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
