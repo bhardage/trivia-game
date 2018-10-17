@@ -45,6 +45,12 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                 return triviaGameService.stop(requestDoc);
             case "join":
                 return triviaGameService.join(requestDoc);
+            case "pass":
+                if (commandParts.length < 2) {
+                    return getPassFormat(requestDoc.getCommand());
+                }
+
+                return triviaGameService.pass(requestDoc, commandText);
             case "question":
                 if (commandParts.length < 2) {
                     return getSubmitQuestionFormat(requestDoc.getCommand());
@@ -76,6 +82,14 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
         }
 
         return getUsageFormat(requestDoc.getCommand());
+    }
+
+    private SlackResponseDoc getPassFormat(final String command) {
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("To pass your turn, use `" + command + " pass <USERNAME>`.\n\nFor example, `" + command + " pass @jsmith`");
+
+        return responseDoc;
     }
 
     private SlackResponseDoc getSubmitQuestionFormat(final String command) {
@@ -119,6 +133,7 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                         "To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`." +
                                 " If no correct answers were given, use `" + command + " correct none <CORRECT_ANSWER>`. This requires you to be the host."
                 ),
+                new SlackAttachment("To pass your turn to someone else, use `" + command + " pass <USERNAME>`"),
                 new SlackAttachment("To view whose turn it is, the current question, and all answers provided so far, use `" + command + " status`"),
                 new SlackAttachment("To view the current scores, use `" + command + " scores`."),
                 new SlackAttachment("To reset all scores, use `" + command + " reset`."),

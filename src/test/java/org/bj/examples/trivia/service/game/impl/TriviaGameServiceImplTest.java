@@ -192,9 +192,10 @@ public class TriviaGameServiceImplTest {
     @Test
     public void testGetScoresFormatsAndSortsCorrectly() {
         final Map<SlackUser, Long> scoresByUser = ImmutableMap.of(
-                new SlackUser("1234", "test1"), 1L,
+                new SlackUser("1234", "test4"), 1L,
                 new SlackUser("1235", "longertest2"), 103L,
-                new SlackUser("1236", "unmanageablylongertest3"), 12L
+                new SlackUser("1236", "unmanageablylongertest3"), 12L,
+                new SlackUser("1237", "test1"), 1L
         );
         final String channelId = "channel";
         final SlackRequestDoc requestDoc = new SlackRequestDoc();
@@ -208,10 +209,11 @@ public class TriviaGameServiceImplTest {
          * ```Scores:
          *
          * @longertest2:             103
+         * @unmanageablylongertest3:  12
          * @test1:                     1
-         * @unmanageablylongertest3:  12```
+         * @test4:                     1```
          */
-        assertThat(responseDoc.getText(), is("```Scores:\n\n@longertest2:             103\n@test1:                     1\n@unmanageablylongertest3:  12```"));
+        assertThat(responseDoc.getText(), is("```Scores:\n\n@longertest2:             103\n@unmanageablylongertest3:  12\n@test1:                     1\n@test4:                     1```"));
     }
 
     @Test

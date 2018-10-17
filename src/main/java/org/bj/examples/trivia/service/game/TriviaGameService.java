@@ -18,6 +18,8 @@ public interface TriviaGameService {
      */
     SlackResponseDoc join(final SlackRequestDoc requestDoc);
 
+    SlackResponseDoc pass(final SlackRequestDoc requestDoc, final String target);
+
     SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question);
     SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer);
     SlackResponseDoc markAnswerCorrect(final SlackRequestDoc requestDoc, final String target, final String answer);

@@ -109,6 +109,36 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         return responseDoc;
     }
 
+    public SlackResponseDoc pass(final SlackRequestDoc requestDoc, final String target) {
+        final String userId = SlackUtils.normalizeId(target);
+
+        try {
+            final boolean userExists = scoreService.doesUserExist(requestDoc.getChannelId(), userId);
+
+            if (!userExists) {
+                final SlackResponseDoc responseDoc = SlackResponseDoc.failure("User " + target + " does not exist. Please choose a valid user.");
+                responseDoc.setAttachments(Arrays.asList(new SlackAttachment("Usage: `" + requestDoc.getCommand() + " pass @jsmith`")));
+                return responseDoc;
+            }
+
+            workflowService.onTurnChanged(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
+        } catch (WorkflowException e) {
+            return SlackResponseDoc.failure(e.getMessage());
+        }
+
+        final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+        delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+        delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> has decided to pass his/her turn to <@" + userId + ">.\n\nOK, <@" + userId + ">, it's your turn to ask a question!");
+        delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("Turn passed to <@" + userId + ">.");
+        return responseDoc;
+    }
+
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {
         try {
             workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId(), question);
