@@ -1,9 +1,9 @@
-package org.bj.examples.trivia.dao.workflow;
+package org.bj.examples.trivia.data.workflow;
 
 import java.sql.Date;
 import java.time.ZoneId;
 
-import org.bj.examples.trivia.dao.BaseDao;
+import org.bj.examples.trivia.data.BaseDao;
 import org.springframework.stereotype.Service;
 
 import com.google.cloud.Timestamp;

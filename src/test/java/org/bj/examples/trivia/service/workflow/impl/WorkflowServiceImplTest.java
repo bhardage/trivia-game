@@ -16,10 +16,10 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.bj.examples.trivia.dao.workflow.Answer;
-import org.bj.examples.trivia.dao.workflow.Workflow;
-import org.bj.examples.trivia.dao.workflow.WorkflowDao;
-import org.bj.examples.trivia.dao.workflow.WorkflowStage;
+import org.bj.examples.trivia.data.workflow.Answer;
+import org.bj.examples.trivia.data.workflow.Workflow;
+import org.bj.examples.trivia.data.workflow.WorkflowDao;
+import org.bj.examples.trivia.data.workflow.WorkflowStage;
 import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
 import org.bson.types.ObjectId;

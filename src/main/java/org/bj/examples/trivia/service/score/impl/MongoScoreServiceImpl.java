@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.bj.examples.trivia.dao.score.ScoreInfo;
-import org.bj.examples.trivia.dao.score.ScoreInfoRepo;
+import org.bj.examples.trivia.data.score.ScoreInfo;
+import org.bj.examples.trivia.data.score.ScoreInfoRepo;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.ScoreException;
 import org.bj.examples.trivia.service.score.ScoreService;

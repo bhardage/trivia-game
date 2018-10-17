@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.dao.workflow;
+package org.bj.examples.trivia.data.workflow;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

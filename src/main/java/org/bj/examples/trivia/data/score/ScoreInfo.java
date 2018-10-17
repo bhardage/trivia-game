@@ -1,4 +1,4 @@
-package org.bj.examples.trivia.dao.score;
+package org.bj.examples.trivia.data.score;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;

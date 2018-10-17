@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bj.examples.trivia.dao.workflow.Answer;
-import org.bj.examples.trivia.dao.workflow.Workflow;
-import org.bj.examples.trivia.dao.workflow.WorkflowRepo;
-import org.bj.examples.trivia.dao.workflow.WorkflowStage;
+import org.bj.examples.trivia.data.workflow.Answer;
+import org.bj.examples.trivia.data.workflow.Workflow;
+import org.bj.examples.trivia.data.workflow.WorkflowRepo;
+import org.bj.examples.trivia.data.workflow.WorkflowStage;
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;

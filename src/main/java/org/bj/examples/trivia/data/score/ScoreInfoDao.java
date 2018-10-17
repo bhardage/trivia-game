@@ -1,9 +1,9 @@
-package org.bj.examples.trivia.dao.score;
+package org.bj.examples.trivia.data.score;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bj.examples.trivia.dao.BaseDao;
+import org.bj.examples.trivia.data.BaseDao;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 

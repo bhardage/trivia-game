@@ -1,10 +1,10 @@
-package org.bj.examples.trivia.dao.workflow;
+package org.bj.examples.trivia.data.workflow;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.bj.examples.trivia.dao.BaseDao;
-import org.bj.examples.trivia.dao.score.ScoreInfo;
+import org.bj.examples.trivia.data.BaseDao;
+import org.bj.examples.trivia.data.score.ScoreInfo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
