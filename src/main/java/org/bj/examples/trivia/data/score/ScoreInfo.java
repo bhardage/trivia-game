@@ -2,7 +2,15 @@ package org.bj.examples.trivia.data.score;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
+@CompoundIndexes({
+    @CompoundIndex(name = "channelId_userId", def = "{'channelId' : 1, 'userId': 1}", unique = true)
+})
 public class ScoreInfo {
     public static final String CHANNEL_ID_KEY = "channelId";
     public static final String USER_ID_KEY = "userId";
@@ -11,7 +19,10 @@ public class ScoreInfo {
 
     @Id
     private ObjectId id;
+
+    @Indexed
     private String channelId;
+
     private String userId;
     private String username;
     private Long score;

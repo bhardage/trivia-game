@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class Workflow {
     public static final String CHANNEL_ID_KEY = "channelId";
     public static final String CONTROLLING_USER_ID_KEY = "controllingUserId";
@@ -15,7 +18,10 @@ public class Workflow {
 
     @Id
     private ObjectId id;
+
+    @Indexed(unique = true)
     private String channelId;
+
     private String controllingUserId;
     private String question;
     private List<Answer> answers = new ArrayList<>();
