@@ -23,6 +23,7 @@ public class Workflow {
     private String channelId;
 
     private String controllingUserId;
+    private String topic;
     private String question;
     private List<Answer> answers = new ArrayList<>();
     private WorkflowStage stage;
@@ -49,6 +50,14 @@ public class Workflow {
 
     public void setControllingUserId(String controllingUserId) {
         this.controllingUserId = controllingUserId;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public String getQuestion() {

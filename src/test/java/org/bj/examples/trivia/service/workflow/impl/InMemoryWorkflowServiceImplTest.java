@@ -33,7 +33,7 @@ public class InMemoryWorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onGameStarted(null, userId);
+            cut.onGameStarted(null, userId, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -51,7 +51,7 @@ public class InMemoryWorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onGameStarted("12345", null);
+            cut.onGameStarted("12345", null, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -72,7 +72,7 @@ public class InMemoryWorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onGameStarted(channelId, userId);
+            cut.onGameStarted(channelId, userId, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -94,7 +94,7 @@ public class InMemoryWorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onGameStarted(channelId, userId);
+            cut.onGameStarted(channelId, userId, null);
         } catch (Exception e) {
             exception = e;
         }
@@ -115,7 +115,7 @@ public class InMemoryWorkflowServiceImplTest {
         Exception exception = null;
 
         try {
-            cut.onGameStarted(channelId, userId);
+            cut.onGameStarted(channelId, userId, null);
         } catch (Exception e) {
             exception = e;
         }

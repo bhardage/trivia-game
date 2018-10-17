@@ -7,7 +7,7 @@ import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
 
 public interface WorkflowService {
-    void onGameStarted(final String channelId, final String userId) throws WorkflowException;
+    void onGameStarted(final String channelId, final String userId, final String topic) throws WorkflowException;
     void onGameStopped(final String channelId, final String userId) throws GameNotStartedException, WorkflowException;
     void onQuestionSubmitted(final String channelId, final String userId, final String question) throws GameNotStartedException, WorkflowException;
     void onAnswerSubmitted(

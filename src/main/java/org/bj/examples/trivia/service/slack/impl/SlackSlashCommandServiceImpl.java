@@ -13,6 +13,7 @@ import org.bj.examples.trivia.service.game.TriviaGameService;
 import org.bj.examples.trivia.service.slack.SlackSlashCommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
@@ -40,7 +41,7 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
 
         switch (operator) {
             case "start":
-                return triviaGameService.start(requestDoc);
+                return triviaGameService.start(requestDoc, StringUtils.isEmpty(commandText) ? null : commandText);
             case "stop":
                 return triviaGameService.stop(requestDoc);
             case "join":

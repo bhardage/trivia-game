@@ -28,7 +28,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
-    public void onGameStarted(final String channelId, final String userId) throws WorkflowException {
+    public void onGameStarted(final String channelId, final String userId, final String topic) throws WorkflowException {
         if (channelId == null || userId == null) {
             return;
         }
@@ -46,6 +46,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         workflow = new Workflow();
         workflow.setChannelId(channelId);
         workflow.setControllingUserId(userId);
+        workflow.setTopic(topic);
         workflow.setQuestion(null);
         workflow.setStage(WorkflowStage.STARTED);
         workflowDao.save(workflow);
@@ -169,18 +170,23 @@ public class WorkflowServiceImpl implements WorkflowService {
             return null;
         }
 
+        final GameState gameState = new GameState();
         final Workflow workflow = workflowDao.findByChannelId(channelId);
-        final GameState gameState;
 
         if (workflow == null) {
-            gameState = new GameState(null, null, null);
-        } else if (workflow.getStage() == WorkflowStage.STARTED) {
-            gameState = new GameState(workflow.getControllingUserId(), null, null);
-        } else {
+            return gameState;
+        }
+
+        gameState.setControllingUserId(workflow.getControllingUserId());
+        gameState.setTopic(workflow.getTopic());
+
+        if (workflow.getStage() == WorkflowStage.QUESTION_ASKED) {
+            gameState.setQuestion(workflow.getQuestion());
+
             final List<GameState.Answer> answers = workflow.getAnswers().stream()
                     .map(answer -> new GameState.Answer(answer.getUserId(), answer.getUsername(), answer.getText(), answer.getCreatedDate()))
                     .collect(Collectors.toList());
-            gameState = new GameState(workflow.getControllingUserId(), workflow.getQuestion(), answers);
+            gameState.setAnswers(answers);
         }
 
         return gameState;

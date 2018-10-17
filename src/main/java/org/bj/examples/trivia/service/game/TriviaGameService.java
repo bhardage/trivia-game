@@ -4,7 +4,7 @@ import org.bj.examples.trivia.dto.SlackRequestDoc;
 import org.bj.examples.trivia.dto.SlackResponseDoc;
 
 public interface TriviaGameService {
-    SlackResponseDoc start(final SlackRequestDoc requestDoc);
+    SlackResponseDoc start(final SlackRequestDoc requestDoc, final String topic);
 
     /**
      * This method is used when a person is supposed to be

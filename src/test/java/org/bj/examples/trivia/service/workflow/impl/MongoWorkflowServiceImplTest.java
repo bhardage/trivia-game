@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.bj.examples.trivia.data.workflow.Answer;
 import org.bj.examples.trivia.data.workflow.Workflow;
-import org.bj.examples.trivia.data.workflow.WorkflowDao;
+import org.bj.examples.trivia.data.workflow.WorkflowRepo;
 import org.bj.examples.trivia.data.workflow.WorkflowStage;
 import org.bj.examples.trivia.exception.GameNotStartedException;
 import org.bj.examples.trivia.exception.WorkflowException;
@@ -31,12 +31,12 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class WorkflowServiceImplTest {
+public class MongoWorkflowServiceImplTest {
     @InjectMocks
-    public WorkflowServiceImpl cut;
+    public MongoWorkflowServiceImpl cut;
 
     @Mock
-    private WorkflowDao workflowDao;
+    private WorkflowRepo workflowRepo;
 
     //region onGameStarted
     @Test
@@ -51,7 +51,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -94,8 +94,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("You are already hosting!")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -110,7 +110,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -124,8 +124,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("<@" + controllingUserId + "> is currently hosting.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String topic = "some topic";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -146,10 +146,10 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
 
         ArgumentCaptor<Workflow> workflowCaptor = ArgumentCaptor.forClass(Workflow.class);
-        verify(workflowDao).save(workflowCaptor.capture());
+        verify(workflowRepo).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
         assertThat(workflowCaptor.getValue().getChannelId(), is(equalTo(channelId)));
@@ -172,7 +172,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -187,7 +187,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -195,7 +195,7 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -208,8 +208,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(notNullValue()));
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).delete(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).delete(any());
     }
 
     @Test
@@ -224,7 +224,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -238,8 +238,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("<@" + controllingUserId + "> is currently hosting.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).delete(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).delete(any());
     }
 
     @Test
@@ -254,7 +254,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -266,8 +266,8 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao).delete(id.toHexString());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo).deleteById(id);
     }
     //endregion
 
@@ -284,7 +284,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -299,7 +299,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -308,7 +308,7 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String question = "test question";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -321,8 +321,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(notNullValue()));
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -338,7 +338,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -352,8 +352,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("<@" + controllingUserId + "> has already asked a question.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -369,7 +369,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -383,8 +383,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("It's <@" + controllingUserId + ">'s turn to ask a question.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -399,7 +399,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -413,8 +413,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("You have already asked a question.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -430,7 +430,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -442,10 +442,10 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
 
         ArgumentCaptor<Workflow> workflowCaptor = ArgumentCaptor.forClass(Workflow.class);
-        verify(workflowDao).save(workflowCaptor.capture());
+        verify(workflowRepo).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
         assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));
@@ -469,7 +469,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -484,7 +484,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -492,7 +492,7 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -505,8 +505,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(notNullValue()));
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -520,7 +520,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -534,8 +534,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("You can't answer your own question!")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -549,7 +549,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -563,8 +563,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("You can't answer your own question!")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -579,7 +579,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -593,8 +593,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("A question has not yet been submitted. Please wait for <@" + controllingUserId + "> to ask a question.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -613,7 +613,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -625,10 +625,10 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
 
         ArgumentCaptor<Workflow> workflowCaptor = ArgumentCaptor.forClass(Workflow.class);
-        verify(workflowDao).save(workflowCaptor.capture());
+        verify(workflowRepo).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
         assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));
@@ -659,7 +659,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -674,7 +674,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -682,7 +682,7 @@ public class WorkflowServiceImplTest {
         final String channelId = "C12345";
         final String userId = "U6789";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -695,7 +695,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(notNullValue()));
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
     }
 
     @Test
@@ -710,7 +710,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -724,7 +724,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("It's <@" + controllingUserId + ">'s turn; only he/she can mark an answer correct.")));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
     }
 
     @Test
@@ -739,7 +739,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -753,7 +753,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("It's <@" + controllingUserId + ">'s turn; only he/she can mark an answer correct.")));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
     }
 
     @Test
@@ -767,7 +767,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.STARTED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -781,7 +781,7 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("A question has not yet been submitted. Please ask a question before marking an answer correct.")));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
     }
 
     @Test
@@ -795,7 +795,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -807,7 +807,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
     }
     //endregion
 
@@ -824,7 +824,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -839,7 +839,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -854,7 +854,7 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verifyZeroInteractions(workflowDao);
+        verifyZeroInteractions(workflowRepo);
     }
 
     @Test
@@ -863,7 +863,7 @@ public class WorkflowServiceImplTest {
         final String userId = "U6789";
         final String newControllingUserId = "U1532";
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(null);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(null);
 
         Exception exception = null;
 
@@ -876,8 +876,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(notNullValue()));
         assertThat(exception, is(instanceOf(GameNotStartedException.class)));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -893,7 +893,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(controllingUserId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -907,8 +907,8 @@ public class WorkflowServiceImplTest {
         assertThat(exception, is(instanceOf(WorkflowException.class)));
         assertThat(exception.getMessage(), is(equalTo("It's <@" + controllingUserId + ">'s turn; only he/she can cede his/her turn.")));
 
-        verify(workflowDao).findByChannelId(channelId);
-        verify(workflowDao, never()).save(any());
+        verify(workflowRepo).findByChannelId(channelId);
+        verify(workflowRepo, never()).save(any());
     }
 
     @Test
@@ -924,7 +924,7 @@ public class WorkflowServiceImplTest {
         workflow.setControllingUserId(userId);
         workflow.setStage(WorkflowStage.QUESTION_ASKED);
 
-        given(workflowDao.findByChannelId(anyString())).willReturn(workflow);
+        given(workflowRepo.findByChannelId(anyString())).willReturn(workflow);
 
         Exception exception = null;
 
@@ -936,10 +936,10 @@ public class WorkflowServiceImplTest {
 
         assertThat(exception, is(nullValue()));
 
-        verify(workflowDao).findByChannelId(channelId);
+        verify(workflowRepo).findByChannelId(channelId);
 
         ArgumentCaptor<Workflow> workflowCaptor = ArgumentCaptor.forClass(Workflow.class);
-        verify(workflowDao).save(workflowCaptor.capture());
+        verify(workflowRepo).save(workflowCaptor.capture());
 
         assertThat(workflowCaptor.getValue(), is(notNullValue()));
         assertThat(workflowCaptor.getValue().getId(), is(equalTo(id)));

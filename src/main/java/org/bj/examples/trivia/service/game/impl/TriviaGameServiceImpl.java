@@ -29,7 +29,7 @@ import org.springframework.stereotype.Service;
 public class TriviaGameServiceImpl implements TriviaGameService {
     private static final String GAME_NOT_STARTED_FORMAT = "A game has not yet been started. If you'd like to start a game, try `%s start`";
 
-    private static final String BASE_STATUS_FORMAT = "*Turn:* %s\n*Question:*%s";
+    private static final String BASE_STATUS_FORMAT = "*Topic:* %s\n*Turn:* %s\n*Question:*%s";
     private static final String ANSWERS_FORMAT = "\n\n*Answers:*%s";
     private static final String SINGLE_ANSWER_FORMAT = "%22s   %s   %s";
 
@@ -53,12 +53,12 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         this.delayedSlackService = delayedSlackService;
     }
 
-    public SlackResponseDoc start(final SlackRequestDoc requestDoc) {
+    public SlackResponseDoc start(final SlackRequestDoc requestDoc, final String topic) {
         final String channelId = requestDoc.getChannelId();
         final String userId = requestDoc.getUserId();
 
         try {
-            workflowService.onGameStarted(channelId, userId);
+            workflowService.onGameStarted(channelId, userId, topic);
         } catch (GameNotStartedException e) {
             return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
         } catch (WorkflowException e) {
@@ -282,10 +282,11 @@ public class TriviaGameServiceImpl implements TriviaGameService {
 
         final boolean isControllingUser = gameState.getControllingUserId().equals(requestDoc.getUserId());
 
+        final String topic = gameState.getTopic() == null ? "None" : gameState.getTopic();
         final String turn = isControllingUser ? "Yours" : "<@" + gameState.getControllingUserId() + ">";
         final String question = gameState.getQuestion() == null ? " Waiting..." : ("\n\n" + gameState.getQuestion());
 
-        String statusText = String.format(BASE_STATUS_FORMAT, turn, question);
+        String statusText = String.format(BASE_STATUS_FORMAT, topic, turn, question);
 
         if (gameState.getQuestion() != null) {
             String answerText;
