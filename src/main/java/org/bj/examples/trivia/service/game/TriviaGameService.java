@@ -12,6 +12,12 @@ public interface TriviaGameService {
      */
     SlackResponseDoc stop(final SlackRequestDoc requestDoc);
 
+    /**
+     * This method allows users to participate in playing the
+     * game. Note that a game does not have to be started to join
+     */
+    SlackResponseDoc join(final SlackRequestDoc requestDoc);
+
     SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question);
     SlackResponseDoc submitAnswer(final SlackRequestDoc requestDoc, final String answer);
     SlackResponseDoc markAnswerCorrect(final SlackRequestDoc requestDoc, final String target, final String answer);

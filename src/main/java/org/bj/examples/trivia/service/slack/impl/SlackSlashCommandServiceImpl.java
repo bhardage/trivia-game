@@ -43,6 +43,8 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                 return triviaGameService.start(requestDoc);
             case "stop":
                 return triviaGameService.stop(requestDoc);
+            case "join":
+                return triviaGameService.join(requestDoc);
             case "question":
                 if (commandParts.length < 2) {
                     return getSubmitQuestionFormat(requestDoc.getCommand());
@@ -110,12 +112,17 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
 
         final List<SlackAttachment> attachments = Arrays.asList(
                 new SlackAttachment("To start a new game as the host, use `" + command + " start`"),
+                new SlackAttachment("To join a game, use `" + command + " join`"),
                 new SlackAttachment("To ask a question, use `" + command + " question <QUESTION>`. This requires you to be the host."),
-                new SlackAttachment("To answer a question, use `" + command + " answer <ANSWER>`."),
-                new SlackAttachment("To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`. This requires you to be the host."),
-                new SlackAttachment("To view the current socres, use `" + command + " scores`."),
+                new SlackAttachment("To answer a question, use `" + command + " answer <ANSWER>`. (Note that answering a question will automatically join the game.)"),
+                new SlackAttachment(
+                        "To identify a correct answer, use `" + command + " correct <USERNAME> <ANSWER>`." +
+                                " If no correct answers were given, use `" + command + " correct none <CORRECT_ANSWER>`. This requires you to be the host."
+                ),
+                new SlackAttachment("To view whose turn it is, the current question, and all answers provided so far, use `" + command + " status`"),
+                new SlackAttachment("To view the current scores, use `" + command + " scores`."),
                 new SlackAttachment("To reset all scores, use `" + command + " reset`."),
-                new SlackAttachment("To stop the current game, use `" + command + " stop`")
+                new SlackAttachment("To stop the current game, use `" + command + " stop`. This requires you to be the host.")
         );
         responseDoc.setAttachments(attachments);
 

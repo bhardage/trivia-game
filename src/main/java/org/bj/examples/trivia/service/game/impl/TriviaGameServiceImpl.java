@@ -88,6 +88,27 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         return responseDoc;
     }
 
+    public SlackResponseDoc join(final SlackRequestDoc requestDoc) {
+        final SlackUser user = new SlackUser(requestDoc.getUserId(), requestDoc.getUsername());
+        final boolean userCreated = scoreService.createUserIfNotExists(requestDoc.getChannelId(), user);
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+
+        if (userCreated) {
+            responseDoc.setText("Joining game.");
+
+            final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+            delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+            delayedResponseDoc.setText("<@" + requestDoc.getUserId() + "> has joined the game!");
+            delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+        } else {
+            responseDoc.setText("You're already in the game.");
+        }
+
+        return responseDoc;
+    }
+
     public SlackResponseDoc submitQuestion(final SlackRequestDoc requestDoc, final String question) {
         try {
             workflowService.onQuestionSubmitted(requestDoc.getChannelId(), requestDoc.getUserId(), question);
