@@ -1,0 +1,50 @@
+messages:
+  gameStartMessages:
+  - 'OK, <@%s>, please ask a question.'
+  - 'Let the game begin! Start us off, <@%s>!'
+  gameStopMessages:
+  - 'The game has been stopped but scores have not been cleared. If you''d like to start a new game, try `%1$s start`.'
+  playerAddedMessages:
+  - '<@%s> has joined the game!'
+  - 'Uh oh, here comes <@%s>!'
+  - 'We have a new arrival: <@%s>!'
+  turnPassedMessages:
+  - |-
+    <@%1$s> has decided to pass his/her turn to <@%2$s>.
+    
+    OK, <@%2$s>, it's your turn to ask a question!
+  questionSubmittedMessages:
+  - |-
+    <@%s> asked the following question:
+    
+    %s
+  answerSubmittedMessages:
+  - '<@%s> answers:'
+  incorrectAnswerMessages:
+  - 'You couldn''t be more wrong, <@%s>'
+  noCorrectAnswerMessages:
+  - WITH_ANSWER: |-
+      It looks like no one was able to answer that one! The correct answer was "%1$s".
+      
+      %2$s
+      
+      OK, <@%3$s>, let's try another one!
+    WITHOUT_ANSWER: |-
+      It looks like no one was able to answer that one!
+      
+      %2$s
+      
+      OK, <@%3$s>, let's try another one!
+  correctAnswerMessages:
+  - WITH_ANSWER: |-
+      <@%3$s> is correct with "%1$s"!
+      
+      %2$s
+      
+      OK, <@%3$s>, you're up!
+    WITHOUT_ANSWER: |-
+      <@%3$s> is correct!
+      
+      %2$s
+      
+      OK, <@%3$s>, you're up!
