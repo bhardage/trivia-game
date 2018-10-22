@@ -2,16 +2,16 @@ messages:
   gameStartMessages:
   - 'OK, <@%s>, please ask a question.'
   - 'Let the game begin! Start us off, <@%s>!'
-  - 'Let''s get ready to rumble, <@%s>!!!
+  - 'Let''s get ready to rumble, <@%s>!!!'
   gameStopMessages:
   - 'The game has been stopped but scores have not been cleared. If you''d like to start a new game, try `%1$s start`.'
-  - 'Game trivia system shutting down in 3...2...1...done! If you''d like to start a new game, try `%1$s start`.
+  - 'Game trivia system shutting down in 3...2...1...done! If you''d like to start a new game, try `%1$s start`.'
   playerAddedMessages:
   - '<@%s> has joined the game!'
   - 'Uh oh, here comes <@%s>!'
   - 'We have a new arrival: <@%s>!'
-  - 'Welcome home, <@%s>...
-  - 'Hidy ho there <@%s>!
+  - 'Welcome home, <@%s>...'
+  - 'Hidy ho there <@%s>!'
   turnPassedMessages:
   - |-
     <@%1$s> has decided to pass his/her turn to <@%2$s>.
@@ -20,7 +20,7 @@ messages:
   - |-
     <@%1$s> has decided to pass the ball to <@%2$s>.
     
-    OK, <@%2$s>, you''re up!    
+    OK, <@%2$s>, you're up!
   questionSubmittedMessages:
   - |-
     <@%s> asked the following question:
