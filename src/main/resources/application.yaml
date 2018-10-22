@@ -27,7 +27,7 @@ messages:
     
     %s
   - |-
-    <@%s> this brain buster:
+    <@%s> asked this brain buster:
     
     %s
   - |-
@@ -45,8 +45,6 @@ messages:
       %2$s
       
       OK, <@%3$s>, let's try another one!
-      |-
-      
     WITHOUT_ANSWER: |-
       It looks like no one was able to answer that one!
       
