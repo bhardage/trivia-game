@@ -2,8 +2,6 @@ package org.bj.examples.trivia.service.workflow.impl;
 
 import java.time.LocalDateTime;
 
-import org.bj.examples.trivia.data.workflow.Workflow;
-import org.bj.examples.trivia.data.workflow.WorkflowStage;
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.GameNotStartedException;

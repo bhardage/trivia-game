@@ -140,7 +140,7 @@ public class MongoWorkflowServiceImpl implements WorkflowService {
         } else if (workflow.getStage() != WorkflowStage.QUESTION_ASKED) {
             throw new WorkflowException("A question has not yet been submitted. Please ask a question before identifying an incorrect answer.");
         } else if (!workflow.getAnswers().stream().anyMatch(answer -> answer.getUserId().equals(incorrectUserId))) {
-            throw new WorkflowException("User " + incorrectUserId + " either doesn't exist or has not answered this question yet.");
+            throw new WorkflowException("User <@" + incorrectUserId + "> either doesn't exist or has not answered this question yet.");
         }
     }
 
