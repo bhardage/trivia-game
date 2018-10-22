@@ -17,6 +17,7 @@ public interface WorkflowService {
             final String answerText,
             final LocalDateTime createdDate
     ) throws GameNotStartedException, WorkflowException;
+    void onIncorrectAnswerSelected(final String channelId, final String userId, final String incorrectUserId) throws GameNotStartedException, WorkflowException;
     void onCorrectAnswerSelected(final String channelId, final String userId) throws GameNotStartedException, WorkflowException;
     void onTurnChanged(final String channelId, final String userId, final String newControllingUserId)
             throws GameNotStartedException, WorkflowException;

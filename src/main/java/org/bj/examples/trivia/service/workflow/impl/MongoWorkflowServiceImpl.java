@@ -126,6 +126,25 @@ public class MongoWorkflowServiceImpl implements WorkflowService {
     }
 
     @Override
+    public void onIncorrectAnswerSelected(final String channelId, final String userId, final String incorrectUserId) throws GameNotStartedException, WorkflowException {
+        if (channelId == null || userId == null) {
+            return;
+        }
+
+        final Workflow workflow = workflowRepo.findByChannelId(channelId);
+
+        if (workflow == null) {
+            throw new GameNotStartedException();
+        } else if (!userId.equals(workflow.getControllingUserId())) {
+            throw new WorkflowException("It's <@" + workflow.getControllingUserId() + ">'s turn; only he/she can identify an incorrect answer.");
+        } else if (workflow.getStage() != WorkflowStage.QUESTION_ASKED) {
+            throw new WorkflowException("A question has not yet been submitted. Please ask a question before identifying an incorrect answer.");
+        } else if (!workflow.getAnswers().stream().anyMatch(answer -> answer.getUserId().equals(incorrectUserId))) {
+            throw new WorkflowException("User " + incorrectUserId + " either doesn't exist or has not answered this question yet.");
+        }
+    }
+
+    @Override
     public void onCorrectAnswerSelected(final String channelId, final String userId) throws GameNotStartedException, WorkflowException {
         if (channelId == null || userId == null) {
             return;

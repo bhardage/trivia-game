@@ -55,18 +55,24 @@ public class MessageConfigTest {
         assertThat(cut.getTurnPassedMessages().get(1), is(equalTo("<@%1$s> has decided to pass the ball to <@%2$s>.\n\nOK, <@%2$s>, you're up!")));
 
         assertThat(cut.getQuestionSubmittedMessages(), is(notNullValue()));
-        assertThat(cut.getQuestionSubmittedMessages(), hasSize(3));
+        assertThat(cut.getQuestionSubmittedMessages(), hasSize(4));
         assertThat(cut.getQuestionSubmittedMessages().get(0), is(equalTo("<@%s> asked the following question:\n\n%s")));
         assertThat(cut.getQuestionSubmittedMessages().get(1), is(equalTo("<@%s> asked this brain buster:\n\n%s")));
         assertThat(cut.getQuestionSubmittedMessages().get(2), is(equalTo("The following question has been asked by <@%s>:\n\n%s")));
+        assertThat(cut.getQuestionSubmittedMessages().get(3), is(equalTo("This is an excellent question, <@%s>, and I thank you for it. I think it's great we live in a place where you can ask questions, because without questions, we just have answers, and an answer without a question is a statement:\n\n%s")));
 
         assertThat(cut.getAnswerSubmittedMessages(), is(notNullValue()));
         assertThat(cut.getAnswerSubmittedMessages(), hasSize(1));
         assertThat(cut.getAnswerSubmittedMessages().get(0), is(equalTo("<@%s> answers:")));
 
         assertThat(cut.getIncorrectAnswerMessages(), is(notNullValue()));
-        assertThat(cut.getIncorrectAnswerMessages(), hasSize(1));
+        assertThat(cut.getIncorrectAnswerMessages(), hasSize(6));
         assertThat(cut.getIncorrectAnswerMessages().get(0), is(equalTo("You couldn't be more wrong, <@%s>")));
+        assertThat(cut.getIncorrectAnswerMessages().get(1), is(equalTo("Let's give a big hand for <@%s>! Oh... wait... no, I'm sorry, that's wrong.")));
+        assertThat(cut.getIncorrectAnswerMessages().get(2), is(equalTo("Nice try, <@%s>, but no.")));
+        assertThat(cut.getIncorrectAnswerMessages().get(3), is(equalTo("Thank you so much for your answer, <@%s>, but it's not exactly what we're looking for.")));
+        assertThat(cut.getIncorrectAnswerMessages().get(4), is(equalTo("What a terrific answer you've just submitted, <@%s>! It's wrong, of course, but still terrific.")));
+        assertThat(cut.getIncorrectAnswerMessages().get(5), is(equalTo("<@%s>, what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")));
 
         assertThat(cut.getNoCorrectanswerMessages(), is(notNullValue()));
         assertThat(cut.getNoCorrectanswerMessages(), hasSize(1));
@@ -134,7 +140,8 @@ public class MessageConfigTest {
         assertThat(formattedQuestionSubmittedMessages, is(equalTo(ImmutableList.of(
                 "<@U12345> asked the following question:\n\nsome question",
                 "<@U12345> asked this brain buster:\n\nsome question",
-                "The following question has been asked by <@U12345>:\n\nsome question"
+                "The following question has been asked by <@U12345>:\n\nsome question",
+                "This is an excellent question, <@U12345>, and I thank you for it. I think it's great we live in a place where you can ask questions, because without questions, we just have answers, and an answer without a question is a statement:\n\nsome question"
         ))));
 
         assertThat(cut.getAnswerSubmittedMessages(), is(notNullValue()));
@@ -150,7 +157,12 @@ public class MessageConfigTest {
                 .map(message -> String.format(message, userId1))
                 .collect(Collectors.toList());
         assertThat(formattedIncorrectAnswerMessages, is(equalTo(ImmutableList.of(
-                "You couldn't be more wrong, <@U12345>"
+                "You couldn't be more wrong, <@U12345>",
+                "Let's give a big hand for <@U12345>! Oh... wait... no, I'm sorry, that's wrong.",
+                "Nice try, <@U12345>, but no.",
+                "Thank you so much for your answer, <@U12345>, but it's not exactly what we're looking for.",
+                "What a terrific answer you've just submitted, <@U12345>! It's wrong, of course, but still terrific.",
+                "<@U12345>, what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul."
         ))));
 
         assertThat(cut.getNoCorrectanswerMessages(), is(notNullValue()));

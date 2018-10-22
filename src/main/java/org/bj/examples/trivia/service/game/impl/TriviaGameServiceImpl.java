@@ -196,6 +196,28 @@ public class TriviaGameServiceImpl implements TriviaGameService {
         return responseDoc;
     }
 
+    public SlackResponseDoc markAnswerIncorrect(final SlackRequestDoc requestDoc, final String target) {
+        final String userId = SlackUtils.normalizeId(target);
+
+        try {
+            workflowService.onIncorrectAnswerSelected(requestDoc.getChannelId(), requestDoc.getUserId(), userId);
+        } catch (GameNotStartedException e) {
+            return SlackResponseDoc.failure(String.format(GAME_NOT_STARTED_FORMAT, requestDoc.getCommand()));
+        } catch (WorkflowException e) {
+            return SlackResponseDoc.failure(e.getMessage());
+        }
+
+        final SlackResponseDoc delayedResponseDoc = new SlackResponseDoc();
+        delayedResponseDoc.setResponseType(SlackResponseType.IN_CHANNEL);
+        delayedResponseDoc.setText(messageManager.getMessage(MessageType.INCORRECT_ANSWER, requestDoc.getUserId()));
+        delayedSlackService.sendResponse(requestDoc.getResponseUrl(), delayedResponseDoc);
+
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("Marked answer incorrect.");
+        return responseDoc;
+    }
+
     public SlackResponseDoc markAnswerCorrect(final SlackRequestDoc requestDoc, final String target, final String answer) {
         String text;
 

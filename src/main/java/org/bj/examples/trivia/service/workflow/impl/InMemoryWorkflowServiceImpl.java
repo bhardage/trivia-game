@@ -2,6 +2,8 @@ package org.bj.examples.trivia.service.workflow.impl;
 
 import java.time.LocalDateTime;
 
+import org.bj.examples.trivia.data.workflow.Workflow;
+import org.bj.examples.trivia.data.workflow.WorkflowStage;
 import org.bj.examples.trivia.dto.GameState;
 import org.bj.examples.trivia.dto.SlackUser;
 import org.bj.examples.trivia.exception.GameNotStartedException;
@@ -90,6 +92,21 @@ public class InMemoryWorkflowServiceImpl implements WorkflowService {
             throw new WorkflowException("You can't answer your own question!");
         } else if (question == null) {
             throw new WorkflowException("A question has not yet been submitted. Please wait for <@" + currentHost.getUserId() + "> to ask a question.");
+        }
+    }
+
+    @Override
+    public void onIncorrectAnswerSelected(final String channelId, final String userId, final String incorrectUserId) throws GameNotStartedException, WorkflowException {
+        if (userId == null) {
+            return;
+        }
+
+        if (currentHost == null) {
+            throw new GameNotStartedException();
+        } else if (!currentHost.getUserId().equals(userId)) {
+            throw new WorkflowException("It's <@" + currentHost.getUserId() + ">'s turn; only he/she can identify an incorrect answer.");
+        } else if (question == null) {
+            throw new WorkflowException("A question has not yet been submitted. Please ask a question before identifying an incorrect answer.");
         }
     }
 

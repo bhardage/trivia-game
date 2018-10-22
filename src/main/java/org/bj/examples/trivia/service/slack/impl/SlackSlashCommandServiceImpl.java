@@ -64,6 +64,12 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
                 }
 
                 return triviaGameService.submitAnswer(requestDoc, commandText);
+            case "incorrect":
+                if (commandParts.length < 2) {
+                    return getMarkAnswerIncorrectFormat(requestDoc.getCommand());
+                }
+
+                return triviaGameService.markAnswerIncorrect(requestDoc, commandText);
             case "correct":
                 if (commandParts.length < 2) {
                     return getMarkAnswerCorrectFormat(requestDoc.getCommand());
@@ -105,6 +111,16 @@ public class SlackSlashCommandServiceImpl implements SlackSlashCommandService {
         final SlackResponseDoc responseDoc = new SlackResponseDoc();
         responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
         responseDoc.setText("To submit an answer, use `" + command + " answer <ANSWER_TEXT>`.\n\nFor example, `" + command + " answer Blue skies`");
+
+        return responseDoc;
+    }
+
+    private SlackResponseDoc getMarkAnswerIncorrectFormat(final String command) {
+        final SlackResponseDoc responseDoc = new SlackResponseDoc();
+        responseDoc.setResponseType(SlackResponseType.EPHEMERAL);
+        responseDoc.setText("To identify an answer as incorrect, use `" + command + " incorrect <USERNAME>`.\n"
+                //+ "Optional: To include the incorrect answer to which you're referring, use `" + command + " incorrect <USERNAME> <INCORRECT_ANSWER>`.\n\n"
+                + "\nFor example, `" + command + " incorrect @jsmith`");
 
         return responseDoc;
     }
