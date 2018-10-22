@@ -46,7 +46,7 @@ messages:
   - 'Nice try, <@%s>, but no.'
   - 'Thank you so much for your answer, <@%s>, but it''s not exactly what we''re looking for.'
   - 'What a terrific answer you''ve just submitted, <@%s>! It''s wrong, of course, but still terrific.'
-  - '<@%s>, what you''ve just said is one of the most insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.'
+  - '<@%s>, what you''ve just said is one of the most insanely idiotic things I have ever read. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this channel is now dumber for having read it. I award you no points, and may God have mercy on your soul.'
   noCorrectAnswerMessages:
   - WITH_ANSWER: |-
       It looks like no one was able to answer that one! The correct answer was "%1$s".

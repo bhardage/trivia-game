@@ -72,7 +72,7 @@ public class MessageConfigTest {
         assertThat(cut.getIncorrectAnswerMessages().get(2), is(equalTo("Nice try, <@%s>, but no.")));
         assertThat(cut.getIncorrectAnswerMessages().get(3), is(equalTo("Thank you so much for your answer, <@%s>, but it's not exactly what we're looking for.")));
         assertThat(cut.getIncorrectAnswerMessages().get(4), is(equalTo("What a terrific answer you've just submitted, <@%s>! It's wrong, of course, but still terrific.")));
-        assertThat(cut.getIncorrectAnswerMessages().get(5), is(equalTo("<@%s>, what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul.")));
+        assertThat(cut.getIncorrectAnswerMessages().get(5), is(equalTo("<@%s>, what you've just said is one of the most insanely idiotic things I have ever read. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this channel is now dumber for having read it. I award you no points, and may God have mercy on your soul.")));
 
         assertThat(cut.getNoCorrectanswerMessages(), is(notNullValue()));
         assertThat(cut.getNoCorrectanswerMessages(), hasSize(1));
@@ -162,7 +162,7 @@ public class MessageConfigTest {
                 "Nice try, <@U12345>, but no.",
                 "Thank you so much for your answer, <@U12345>, but it's not exactly what we're looking for.",
                 "What a terrific answer you've just submitted, <@U12345>! It's wrong, of course, but still terrific.",
-                "<@U12345>, what you've just said is one of the most insanely idiotic things I have ever heard. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this room is now dumber for having listened to it. I award you no points, and may God have mercy on your soul."
+                "<@U12345>, what you've just said is one of the most insanely idiotic things I have ever read. At no point in your rambling, incoherent response were you even close to anything that could be considered a rational thought. Everyone in this channel is now dumber for having read it. I award you no points, and may God have mercy on your soul."
         ))));
 
         assertThat(cut.getNoCorrectanswerMessages(), is(notNullValue()));
